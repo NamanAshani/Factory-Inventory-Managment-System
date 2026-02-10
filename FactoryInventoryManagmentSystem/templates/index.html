@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Role | FactoryPro</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .role-container {
+            width: 100%;
+            max-width: 900px;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .header p {
+            margin-top: 6px;
+            font-size: 15px;
+            color: #64748b;
+        }
+        .roles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+        .role-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .role-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(37,99,235,0.2);
+        }
+        .role-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: #2563eb;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px;
+        }
+        .role-card h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .role-card p {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 36px;
+            font-size: 13px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="role-container">
+    <div class="header">
+        <h1>Select Your Role</h1>
+        <p>Choose how you want to access FactoryPro</p>
+    </div>
+
+    <div class="roles">
+        <a href="login.html" class="role-card">
+            <div class="role-icon">🏭</div>
+            <h3>Managing Head</h3>
+            <p>Overall factory operations & control</p>
+        </a>
+
+        <a href="login.html" class="role-card">
+            <div class="role-icon">📊</div>
+            <h3>Managing Director</h3>
+            <p>Strategic insights & high-level reports</p>
+        </a>
+
+        <a href="login.html" class="role-card">
+            <div class="role-icon">🛒</div>
+            <h3>Purchase Head</h3>
+            <p>Supplier & procurement management</p>
+        </a>
+
+        <a href="login.html" class="role-card">
+            <div class="role-icon">🚚</div>
+            <h3>Dispatch Head</h3>
+            <p>Orders, logistics & delivery tracking</p>
+        </a>
+
+        <a href="login.html" class="role-card">
+            <div class="role-icon">💰</div>
+            <h3>Accounts Head</h3>
+            <p>Billing, payments & financial records</p>
+        </a>
+    </div>
+
+    <div class="footer">© 2026 FactoryPro · Role Based Inventory System</div>
+</div>
+
+</body>
+</html>

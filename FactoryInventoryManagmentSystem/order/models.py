@@ -13,7 +13,7 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
         ('canceled', 'Canceled') 
     ], default='pending')
-    cust_name = models.ForeignKey(Customer, on_delete=models.CASCADE,on_update=models.CASCADE)
+    cust_name = models.ForeignKey(Customer, on_delete=models.CASCADE)
     catagory = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
