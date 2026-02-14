@@ -758,16 +758,11 @@
             <div class="user-avatar">BJ</div>
             <div>
                 <div style="font-weight: 600;">btsjimin</div>
-                <div style="font-size: 12px; color: #cbd5e1;">Order Manager</div>
+                <div style="font-size: 12px; color: #cbd5e1;">Stock Manager</div>
             </div>
         </div>
     </div>
     
-    <div class="nav-tabs">
-        <div class="tab active" data-tab="orders">Manage Order</div>
-        <div class="tab" data-tab="customers">Customer Details</div>
-        <div class="tab" data-tab="design-view">Design Wise Order View</div>
-    </div>
     
     <div class="container">
         <div class="dashboard-cards">
@@ -776,8 +771,8 @@
                     <i class="fas fa-shopping-cart"></i>
                 </div>
                 <div class="card-info">
-                    <h3 id="total-orders">42</h3>
-                    <p>Total Orders</p>
+                    <h3 id="total-orders">{{ total_products }}</h3>
+                    <p>Total Products</p>
                 </div>
             </div>
             
@@ -787,7 +782,7 @@
                 </div>
                 <div class="card-info">
                     <h3 id="delivered-orders">28</h3>
-                    <p>Delivered Orders</p>
+                    <p>Total Premium Orders</p>
                 </div>
             </div>
             
@@ -812,106 +807,100 @@
             </div>
         </div>
 
-         <div class="filter-panel">
-            <div class="filter-header">
-                <h2><i class="fas fa-sliders-h"></i> Stock & order filters</h2>
-                <span class="filter-badge"><i class="fas fa-filter"></i> 6+ active dimensions</span>
+       <form method="POST">
+    {% csrf_token %}
+
+    <div class="filter-panel">
+        <div class="filter-header">
+            <h2><i class="fas fa-sliders-h"></i> Stock filters</h2>
+            <span class="filter-badge">
+                <i class="fas fa-filter"></i> 6+ active dimensions
+            </span>
+        </div>
+
+        <div class="filter-row">
+            <div class="filter-group" style="min-width: 180px;">
+                <label><i class="fas fa-tag"></i> Product Name</label>
+                <select class="filter-select" name="product">
+                    <option value="">All products</option>
+                    {% for stock in stocks %}
+                    <option value="{{ stock.product.pro_name }}"  {% if product_selected == stock.product.pro_name %}selected{% endif %}>{{ stock.product.pro_name }}</option>
+                    {% endfor %}
+                   
+                </select>
             </div>
-            <!-- multiple filter rows — stock management style -->
-            <div class="filter-row">
-                <div class="filter-group" style="min-width: 180px;">
-                    <label><i class="fas fa-tag"></i> Product line</label>
-                    <select class="filter-select">
-                        <option>All categories</option>
-                        <option>Fabric</option>
-                        <option>Yarn</option>
-                        <option>Accessories</option>
-                        <option>Finished goods</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-industry"></i> Brand</label>
-                    <select class="filter-select">
-                        <option>Any brand</option>
-                        <option>Heritage Mills</option>
-                        <option>Urban Looms</option>
-                        <option>Artisan Knot</option>
-                        <option>Nexgen</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-palette"></i> Design</label>
-                    <select class="filter-select">
-                        <option>All designs</option>
-                        <option>Floral Wave</option>
-                        <option>Geometric Grid</option>
-                        <option>Abstract</option>
-                        <option>Paisley</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-cubes"></i> Stock status</label>
-                    <select class="filter-select">
-                        <option>In stock / all</option>
-                        <option>Low stock (<10)</option>
-                        <option>Out of stock</option>
-                        <option>Overstock</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-calendar"></i> Order date</label>
-                    <div class="date-range">
-                        <input type="text" placeholder="From" class="date-input" style="width:110px;" value="2026-02-01">
-                        <span style="color:#7c93aa;">–</span>
-                        <input type="text" placeholder="To" class="date-input" style="width:110px;" value="2026-02-13">
-                    </div>
-                </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-industry"></i> Brand</label>
+                <select class="filter-select" name="brand">
+                     <option value="">All brands</option>
+                   {% for stock in stocks %}
+                    <option value="{{ stock.product.brand }}" {% if brand_selected == stock.product.brand %}selected{% endif %}>{{ stock.product.brand }}</option>
+                    {% endfor %}
+                </select>
             </div>
-            <div class="filter-row" style="margin-top: 20px;">
-                <!-- second row: PRE / ECO / COM / STD toggles, material, etc -->
-                <div class="filter-group">
-                    <label>📋 PRE / ECO / COM / STD</label>
-                    <select class="filter-select">
-                        <option>All types</option>
-                        <option>PRE (Preliminary)</option>
-                        <option>ECO (Eco)</option>
-                        <option>COM (Commercial)</option>
-                        <option>STD (Standard)</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-map-marker-alt"></i> Warehouse</label>
-                    <select class="filter-select">
-                        <option>Zone A / main</option>
-                        <option>Zone B</option>
-                        <option>Zone C (export)</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-hashtag"></i> Order ID</label>
-                    <input class="filter-input" type="text" placeholder="e.g. OR-2345" value="42">
-                </div>
-                <div class="filter-actions">
-                    <button class="btn"><i class="fas fa-rotate-right"></i> Reset</button>
-                    <button class="btn btn-primary"><i class="fas fa-magnifying-glass"></i> Apply filters</button>
-                </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-palette"></i> Design</label>
+                <select class="filter-select" name="design">
+                   <option value="">All designs</option>
+                   {% for stock in stocks %}
+                    <option value="{{ stock.product.design }}" {% if design_selected == stock.product.design %}selected{% endif %}>{{ stock.product.design }}</option>
+                    {% endfor %}
+                </select>
             </div>
-        
+        </div>
+
+        <div class="filter-row" style="margin-top: 20px;">
+
+            <div class="filter-group">
+                <label>📋 PRE / ECO / COM / STD</label>
+                <select class="filter-select" name="type">
+                    <option value="">All types</option>
+                    <option value="pre" {% if type_selected == "pre" %}selected{% endif %}>PRE (Premium)</option>
+                    <option value="eco" {% if type_selected == "eco" %}selected{% endif %}>ECO (Economic)</option>
+                    <option value="com" {% if type_selected == "com" %}selected{% endif %}>COM (Commercial)</option>
+                    <option value="std" {% if type_selected == "std" %}selected{% endif %}  >STD (Standard)</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+               <label> Range</label>
+               <input type="number" name="min_range"  value="{{ min_range_selected }}">
+
+                <input type="number" name="max_range"   value="{{ max_range_selected }}">
+            </div>
+             
+
+            <div class="filter-actions">
+                <a href="" class="btn">
+                    <i class="fas fa-rotate-right"></i> Reset
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-magnifying-glass"></i> Apply filters
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+</form>
 
 
 
         
         <div id="orders-section" class="tab-content">
             <div class="section-header">
-                <h2 class="section-title">Manage Order</h2>
-                <button class="btn btn-primary" id="createOrderBtn">
-                    <i class="fas fa-plus"></i> Create New Order
+                <h2 class="section-title">Manage Stock</h2>
+                <button class="btn btn-primary" id="createStockBtn">
+                    <i class="fas fa-plus"></i> Create New Stock
                 </button>
             </div>
             
             <div class="order-table-container">
                 <div class="table-header">
-                    <div class="table-title">Recent Orders</div>
+                    <div class="table-title">Recent Stock</div>
                     <div class="table-controls">
                         <select class="form-control" id="statusFilter" style="width: 150px;">
                             <option value="all">All Status</option>
@@ -920,27 +909,47 @@
                             <option value="delivered">Delivered</option>
                             <option value="canceled">Canceled</option>
                         </select>
-                        <input type="text" class="search-box" id="orderSearch" placeholder="Search orders...">
+                    </div>
                     </div>
                 </div>
                 
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Product</th>
+                            <th>#</th>
+                            <th>Product Name</th>
                             <th>Brand</th>
                             <th>Design</th>
-                            <th>Customer</th>
-                            <th>Order Date</th>
+                            <th>Punch Name</th>
+                            <th>Remark</th>
                             <th>PRE</th>
+                            <th>STD</th>
                             <th>ECO</th>
                             <th>COM</th>
-                            <th>STD</th>
-                            <th>Status</th>
+                            <th>Total</th>
+                            
                         </tr>
                     </thead>
-                </table>
+                    <tbody id="ordersTableBody">
+                        {% for stock in stocks %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ stock.product.pro_name }}</td>
+                            <td>{{ stock.product.brand }}</td>
+                            <td>{{ stock.product.design }}</td>
+                            <td>{{ stock.product.punch_name }}</td>
+                            <td>{{ stock.product.remark }}</td>
+                            <td>{{ stock.pre_quantity }}</td>
+                            <td>{{ stock.std_quantity }}</td>
+                            <td>{{ stock.eco_quantity }}</td>
+                            <td>{{ stock.com_quantity }}</td>
+                            <td>{{ stock.total_quantity }}</td>
+                            
+                        </tr>
+                        {% endfor %}
+
+
+                </table>    
             </div>
         </div>
         
