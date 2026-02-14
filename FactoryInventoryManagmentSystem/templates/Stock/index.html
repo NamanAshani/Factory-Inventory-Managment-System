@@ -764,48 +764,6 @@
     </div>
     
     
-    <div class="container">
-        <div class="dashboard-cards">
-            <div class="dashboard-card">
-                <div class="card-icon icon-blue">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-                <div class="card-info">
-                    <h3 id="total-orders">{{ total_products }}</h3>
-                    <p>Total Products</p>
-                </div>
-            </div>
-            
-            <div class="dashboard-card">
-                <div class="card-icon icon-green">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="card-info">
-                    <h3 id="delivered-orders">28</h3>
-                    <p>Total Premium Orders</p>
-                </div>
-            </div>
-            
-            <div class="dashboard-card">
-                <div class="card-icon icon-orange">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="card-info">
-                    <h3 id="pending-orders">8</h3>
-                    <p>Pending Orders</p>
-                </div>
-            </div>
-            
-            <div class="dashboard-card">
-                <div class="card-icon icon-purple">
-                    <i class="fas fa-truck"></i>
-                </div>
-                <div class="card-info">
-                    <h3 id="shipped-orders">6</h3>
-                    <p>Shipped Orders</p>
-                </div>
-            </div>
-        </div>
 
        <form method="POST">
     {% csrf_token %}
@@ -861,14 +819,15 @@
                     <option value="eco" {% if type_selected == "eco" %}selected{% endif %}>ECO (Economic)</option>
                     <option value="com" {% if type_selected == "com" %}selected{% endif %}>COM (Commercial)</option>
                     <option value="std" {% if type_selected == "std" %}selected{% endif %}  >STD (Standard)</option>
+                    <option value="total" {% if type_selected == "total" %}selected{% endif %}  >Total Quantity</option>
                 </select>
             </div>
             
             <div class="filter-group">
                <label> Range</label>
-               <input type="number" name="min_range"  value="{{ min_range_selected }}">
+               <input placeholder="Min" type="number" name="min_range"  value="{{ min_range_selected }}">
 
-                <input type="number" name="max_range"   value="{{ max_range_selected }}">
+                <input placeholder="Max" type="number" name="max_range"   value="{{ max_range_selected }}">
             </div>
              
 

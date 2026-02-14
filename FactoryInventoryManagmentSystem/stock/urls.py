@@ -6,3 +6,4 @@ urlpatterns = [
     # path("login/<str:role>/", views.login_view, name="login"),
    
 ]
+
