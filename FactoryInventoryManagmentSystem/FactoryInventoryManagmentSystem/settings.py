@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'account',
     'logistics',
     'stock',
+    'authentication',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
