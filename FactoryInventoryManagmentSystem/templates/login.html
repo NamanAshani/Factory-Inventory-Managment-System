@@ -21,11 +21,11 @@
 
         .login-card {
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             background: #ffffff;
             padding: 45px 40px;
-            border-radius: 20px;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.3);
+            border-radius: 22px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
             animation: fadeIn 0.4s ease-in-out;
         }
 
@@ -36,19 +36,19 @@
 
         .logo {
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             color: #0f172a;
+            margin-bottom: 10px;
         }
 
         .role-badge {
             text-align: center;
-            font-size: 13px;
-            margin-bottom: 6px;
+            font-size: 12px;
             color: #64748b;
             letter-spacing: 1px;
             text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
         h2 {
@@ -70,7 +70,8 @@
             color: #334155;
         }
 
-        input {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 12px 14px;
             border-radius: 12px;
@@ -85,6 +86,36 @@
             box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
         }
 
+        .roles {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .roles-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 10px;
+        }
+
+        .role-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            transition: 0.2s ease;
+            cursor: pointer;
+        }
+
+        .role-option:hover {
+            background: #f1f5f9;
+        }
+
+        .role-option input {
+            accent-color: #2563eb;
+        }
+
         button {
             width: 100%;
             padding: 14px;
@@ -94,7 +125,7 @@
             border-radius: 14px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 12px;
+            margin-top: 10px;
             transition: 0.2s ease;
         }
 
@@ -108,6 +139,13 @@
             margin-top: 20px;
             font-size: 12px;
             color: #94a3b8;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -125,17 +163,14 @@
     <h2>{% block heading %}Welcome Back{% endblock %}</h2>
 
     {% if messages %}
-    {% for message in messages %}
-        <p style="color:red; text-align:center;">
-            {{ message }}
-        </p>
-    {% endfor %}
-{% endif %}
+        {% for message in messages %}
+            <p class="error-message">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
 
     <form method="POST">
         {% csrf_token %}
 
-        {% block form_fields %}
         <div class="form-group">
             <label>ID</label>
             <input type="text" name="username" required>
@@ -145,32 +180,42 @@
             <label>Password</label>
             <input type="password" name="password" required>
         </div>
-        {% endblock %}
-     <label>Select Your Role:</label><br>
 
-    <input type="radio" id="md" name="managing_director">
-    <label for="md">Managing Director</label><br>
+        <div class="roles">
+            <div class="roles-title">Select Your Role</div>
 
-    <input type="radio" id="mh" name="managing_head">
-    <label for="mh">Managing Head</label><br>
+            <label class="role-option">
+                <input type="radio" name="role" value="managing_director" required>
+                Managing Director
+            </label>
 
-    <input type="radio" id="dh" name="dispatch_head" >
-    <label for="dh">Dispatch Head</label><br><br>
+            <label class="role-option">
+                <input type="radio" name="role" value="managing_head">
+                Managing Head
+            </label>
 
+            <label class="role-option">
+                <input type="radio" name="role" value="dispatch_head">
+                Dispatch Head
+            </label>
 
+            <label class="role-option">
+                <input type="radio" name="role" value="account_head">
+                Account Head
+            </label>
 
+            <label class="role-option">
+                <input type="radio" name="role" value="purchase_head">
+                Purchase Head
+            </label>
 
-    <input type="radio" id="ah" name="account_head" >
-    <label for="ah">Account Head</label><br><br>
-
-    <input type="radio" id="ph" name="purchase_head">
-    <label for="ph">Purchase Head</label><br><br>
-    
-    <input type="radio" id="lh" name="logistics_head">
-    <label for="lh">Logistics Head</label><br><br>
+            <label class="role-option">
+                <input type="radio" name="role" value="logistics_head">
+                Logistics Head
+            </label>
+        </div>
 
         <button type="submit">Login</button>
-
     </form>
 
     <div class="footer">
