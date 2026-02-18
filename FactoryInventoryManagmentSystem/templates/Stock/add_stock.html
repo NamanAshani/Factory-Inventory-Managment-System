@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Stock - Inventory Management</title>
+    <!-- Importing Poppins font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-color: #00f2fe;
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0f0c29;
+            /* Animated background gradient */
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1f1c2c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Decorative Background Elements */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            background: #764ba2;
+            top: 10%;
+            left: 10%;
+        }
+        .circle-2 {
+            width: 400px;
+            height: 400px;
+            background: #667eea;
+            bottom: 10%;
+            right: 10%;
+        }
+
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            color: var(--text-color);
+            transition: transform 0.3s ease;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            outline: none;
+            font-size: 1rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        select option {
+            background: #302b63;
+            color: white;
+        }
+
+        input:focus, select:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+        }
+
+        /* Styling number inputs */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 114, 255, 0.5);
+            filter: brightness(1.1);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Toast notification styling (simulation) */
+        #message-box {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            .grid-inputs {
+                grid-template-columns: 1fr;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+
+    <div id="message-box">Stock updated successfully!</div>
+
+    <div class="container">
+        <h2>Add Stock</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="product">Product Type</label>
+                <select name="product">
+            <option value="">Select Product</option>
+            {% for product in products %}
+                    <option value="{{ product.pro_id }}" name="product">{{ product.pro_name }}</option>
+            {% endfor %}
+            
+            </select>
+            </div>
+
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>Premium</label>
+                    <input type="number" name="pre_quantity" >
+                </div>
+
+                <div class="form-group">
+                    <label>Standard</label>
+                    <input type="number" name="std_quantity">
+                </div>
+
+                <div class="form-group">
+                    <label>Commercial</label>
+                    <input type="number" name="com_quantity">
+                </div>
+
+                <div class="form-group">
+                    <label>Eco</label>
+                    <input type="number" name="eco_quantity">
+                </div>
+
+                
+            </div>
+
+            <button type="submit">Update Inventory</button>
+        </form>
+    </div>
+
+    {% comment %} <script>
+        document.getElementById('stockForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show success message
+            const msg = document.getElementById('message-box');
+            msg.style.display = 'block';
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+
+            // You would typically handle form data here
+            console.log("Form Submitted Successfully");
+        });
+    </script> {% endcomment %}
+</body>
+</html>

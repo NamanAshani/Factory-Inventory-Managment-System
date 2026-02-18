@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Stock,Product
 from django.db.models import Sum
-
+from .forms import ProductForm, StockForm
 
 def index(request):
 
@@ -83,3 +83,42 @@ def index(request):
     }
 
     return render(request, "Stock/index.html", context)
+
+
+
+
+
+def add_product(request):
+    form = ProductForm(request.POST or None)
+
+    if form.is_valid():
+        product = form.save()
+
+        Stock.objects.create(product=product)       
+        return redirect('index')  # change to your dashboard url name
+
+    return render(request, 'Stock/add_product.html', {'form': form})
+
+
+def add_stock(request):
+    products = Product.objects.all()
+    if request.method == "POST":
+        pro_id = request.POST.get('product')
+
+        if not pro_id:
+            return redirect('add_stock')
+
+        stock, created = Stock.objects.get_or_create(product_id=pro_id)
+
+        stock.pre_quantity = int(request.POST.get('pre_quantity') or 0)
+        stock.std_quantity = int(request.POST.get('std_quantity') or 0)
+        stock.com_quantity = int(request.POST.get('com_quantity') or 0)
+        stock.eco_quantity = int(request.POST.get('eco_quantity') or 0)
+
+        stock.save()
+
+        return redirect('index')
+
+     
+
+    return render(request, 'Stock/add_stock.html', {'products': products})
