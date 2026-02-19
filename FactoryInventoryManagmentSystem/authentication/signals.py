@@ -29,7 +29,7 @@ def create_default_users(sender, **kwargs):
 
     users_data = [
         ("director", "director@123", "Management Director"),
-        ("account", "account@123", "Account Head"),
+        ("managment", "managment@123", "Management Head"),
         ("dispatch", "dispatch@123", "Dispatch Head"),
         ("account", "account@123", "Account Head"),
         ("marketing", "marketing@123", "Marketing Head"),

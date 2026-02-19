@@ -20,11 +20,18 @@ def login_view(request):
         # get password from form
         password = request.POST.get("password")
 
+        selected_role = request.POST.get("role") 
+
         # check credentials using django auth system
         user = authenticate(request, username=username, password=password)
 
         # if user exists and password correct
         if user is not None:
+
+            # Check if selected role matches actual group
+            if not user.groups.filter(name=selected_role.replace("_", " ").title()).exists():
+                messages.error(request, "❌ Selected role does not match your account")
+                return redirect("login")
 
             # log user into session
             login(request, user)
@@ -32,7 +39,7 @@ def login_view(request):
             # redirect user based on role (group)
 
             if user.groups.filter(name="Management Director").exists():
-                return redirect("/director_dashboard")
+                return redirect("md_dashboard")
 
             elif user.groups.filter(name="Management Head").exists():
                 return redirect("/management_dashboard")
@@ -41,7 +48,7 @@ def login_view(request):
                 return redirect("/marketing_dashboard")
             
             elif user.groups.filter(name="Purchase Head").exists():
-                return redirect("/purchase_dashboard")
+                return redirect("ph_dashboard")
             
             elif user.groups.filter(name="Account Head").exists():
                 return redirect("/account_dashboard")
@@ -58,7 +65,12 @@ def login_view(request):
             messages.error(request, "❌ Invalid Username or Password")
 
             # render login page again
-            return render(request, "login.html")
+            return redirect("login") 
 
     # show login page if GET request
     return render(request, "login.html")
+
+
+def ph_dashboard(request):
+    return render(request, "Admin/ph_dashboard.html")
+
