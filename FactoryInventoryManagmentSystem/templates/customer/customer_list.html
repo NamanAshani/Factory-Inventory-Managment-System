@@ -1,33 +1,629 @@
-<!-- CUSTOMER LIST PAGE -->
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer List | FactoryPro</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Safe additions - only fonts and icons, no functionality -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* PURE VISUAL CSS - No functionality changes */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0b1120 0%, #1a2639 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            position: relative;
+        }
+        
+        /* Decorative background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 32px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Header */
+        .list-header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            padding: 30px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+        }
 
-<h1>Customer List</h1>
+        .list-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1));
+            transform: skewX(-20deg) translateX(100px);
+        }
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>City</th>
-        <th>Phone</th>
-        <th>Total Quantity</th>
-        <th>Action</th>
-    </tr>
+        .list-header h1 {
+            color: white !important;
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
 
-    {% for c in customers %}
-    <tr>
-        <td>{{ c.customer_id }}</td>
-        <td>{{ c.customer_name }}</td>
-        <td>{{ c.customer_city }}</td>
-        <td>{{ c.phone_no }}</td>
-        <td>{{ c.cus_quantity }}</td>
-        <td>
-            <a href="{% url 'customer_details' c.customer_id %}">
-                View Details
-            </a>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="6">No Customers Found</td>
-    </tr>
-    {% endfor %}
-</table>
+        .list-header h1 i {
+            font-size: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Add Customer Button */
+        .add-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: white;
+            color: #2563eb;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .add-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            background: #f8fafc;
+        }
+        
+        .add-button i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .add-button:hover i {
+            transform: rotate(90deg);
+        }
+        
+        /* Content */
+        .list-content {
+            padding: 35px;
+            position: relative;
+        }
+        
+        /* Floating icon background */
+        .list-content::before {
+            content: '\f0c0\f0c0\f0c0';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 120px;
+            color: rgba(37, 99, 235, 0.03);
+            pointer-events: none;
+            transform: rotate(-15deg);
+            z-index: 0;
+        }
+        
+        /* Table Container */
+        .table-container {
+            position: relative;
+            z-index: 1;
+            overflow-x: auto;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+        
+        /* Table Styling - Matching payment_list */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            border: none;
+        }
+        
+        th {
+            background: #f8fafc;
+            padding: 18px 20px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;  /* Darker text for better visibility */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            white-space: nowrap;
+        }
+        
+        th:first-child {
+            border-radius: 16px 0 0 16px;
+        }
+        
+        th:last-child {
+            border-radius: 0 16px 16px 0;
+        }
+        
+        /* Add icons to headers */
+        th:nth-child(1):before {
+            content: '\f2bb';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 10px;
+            color: #2563eb;
+            background: #eef2ff;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        th:nth-child(2):before {
+            content: '\f007';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 10px;
+            color: #10b981;
+            background: #d1fae5;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        th:nth-child(3):before {
+            content: '\f64f';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 10px;
+            color: #f59e0b;
+            background: #fef3c7;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        th:nth-child(4):before {
+            content: '\f095';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 10px;
+            color: #8b5cf6;
+            background: #f3e8ff;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        th:nth-child(5):before {
+            content: '\f51e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 10px;
+            color: #ef4444;
+            background: #fee2e2;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        th:nth-child(6):before {
+            content: '\f013';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 10px;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        td {
+            padding: 18px 20px;
+            font-size: 15px;
+            color: #0f172a;  /* Darker text for better visibility */
+            font-weight: 500; /* Slightly bolder */
+            background: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+        
+        tbody tr{
+            background:#ffffff;
+        }
+
+        td{
+            background:#ffffff !important;
+        }
+
+        td:nth-child(2) span{
+            color:#0f172a !important;
+        }
+
+        td:nth-child(3) span{
+            color:#334155 !important;
+        }
+
+        td:nth-child(4) span{
+            color:#1e293b !important;
+        }
+
+        tr:hover td {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px -8px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+        
+        /* ID column styling */
+        td:first-child {
+            font-weight: 700;
+            color: #2563eb;
+            background: #eef2ff;
+            border-radius: 16px 0 0 16px;
+            font-size: 16px;
+        }
+        
+        td:first-child:before {
+            content: '#';
+            margin-right: 4px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        
+        /* Name column styling - FIXED: darker color */
+        td:nth-child(2) {
+            font-weight: 600;
+            color: #0f172a;  /* Very dark - almost black */
+        }
+        
+        td:nth-child(2) i {
+            margin-right: 8px;
+            color: #2563eb;  /* Blue icon for better visibility */
+        }
+        
+        /* City column styling - FIXED: darker color */
+        td:nth-child(3) {
+            color: #334155;  /* Dark gray */
+            font-weight: 500;
+        }
+        
+        td:nth-child(3) i {
+            margin-right: 8px;
+            color: #f59e0b;  /* Orange icon */
+        }
+        
+        /* Phone column styling - FIXED: darker color */
+        td:nth-child(4) {
+            font-family: monospace;
+            color: #1e293b;  /* Dark */
+            font-weight: 500;
+        }
+        
+        td:nth-child(4) i {
+            margin-right: 8px;
+            color: #8b5cf6;  /* Purple icon */
+        }
+        
+        /* Quantity column styling */
+        td:nth-child(5) {
+            font-weight: 700;
+            color: #2563eb;
+            font-size: 16px;
+        }
+        
+        /* Action column styling */
+        td:last-child {
+            border-radius: 0 16px 16px 0;
+        }
+        
+        td:last-child a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            border: none;
+            white-space: nowrap;
+        }
+        
+        td:last-child a:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+        }
+        
+        td:last-child a i {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        td:last-child a:hover i {
+            transform: translateX(5px);
+        }
+        
+        td:last-child a:after {
+            content: '\f06e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-left: 8px;
+            font-size: 12px;
+        }
+        
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #64748b;
+            background: #f8fafc;
+            border-radius: 20px;
+            font-size: 18px;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        /* Animation for rows */
+        @keyframes slideInRow {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        tbody tr {
+            animation: slideInRow 0.4s ease;
+            animation-fill-mode: both;
+        }
+        
+        tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        tbody tr:nth-child(2) { animation-delay: 0.15s; }
+        tbody tr:nth-child(3) { animation-delay: 0.2s; }
+        tbody tr:nth-child(4) { animation-delay: 0.25s; }
+        tbody tr:nth-child(5) { animation-delay: 0.3s; }
+        tbody tr:nth-child(6) { animation-delay: 0.35s; }
+        tbody tr:nth-child(7) { animation-delay: 0.4s; }
+        tbody tr:nth-child(8) { animation-delay: 0.45s; }
+        tbody tr:nth-child(9) { animation-delay: 0.5s; }
+        tbody tr:nth-child(10) { animation-delay: 0.55s; }
+        
+        /* Table footer */
+        .table-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .total-count {
+            background: #f1f5f9;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: #0f172a;  /* Darker text */
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .total-count i {
+            color: #2563eb;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            body {
+                padding: 20px;
+            }
+            
+            .list-header {
+                padding: 25px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .list-header h1 {
+                font-size: 28px;
+            }
+            
+            .add-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .list-content {
+                padding: 20px;
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 800px;
+            }
+            
+            .table-footer {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="list-header">
+        <h1>Customer List</h1>
+        <a href="{% url 'add_customer' %}" class="add-button">
+            <i class="fas fa-plus"></i> Add Customer
+        </a>
+    </div>
+
+    <div class="list-content">
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NAME</th>
+                        <th>CITY</th>
+                        <th>PHONE</th>
+                        <th>TOTAL QUANTITY</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in customers %}
+                    <tr>
+                        <td>{{ c.customer_id }}</td>
+                        <td>
+                            <i class="fas fa-user" style="margin-right: 8px; color: #2563eb;"></i>
+                            <span style="color: #0f172a; font-weight: 600;">{{ c.customer_name }}</span>
+                        </td>
+                        <td>
+                            <i class="fas fa-map-marker-alt" style="margin-right: 8px; color: #f59e0b;"></i>
+                            <span style="color: #334155;">{{ c.customer_city }}</span>
+                        </td>
+                        <td>
+                            <i class="fas fa-phone" style="margin-right: 8px; color: #8b5cf6;"></i>
+                            <span style="color: #1e293b; font-family: monospace;">{{ c.phone_no }}</span>
+                        </td>
+                        <td>{{ c.cus_quantity }}</td>
+                        <td>
+                            <a href="{% url 'customer_details' c.customer_id %}">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <h3>No Customers Found</h3>
+                            <p>Click the "Add Customer" button to create your first customer</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if customers %}
+        <div class="table-footer">
+            <div class="total-count">
+                <i class="fas fa-users"></i> Total Customers: {{ customers|length }}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,17 +1,126 @@
-<h1>Marketing Head Dashboard</h1>
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marketing Head Dashboard | FactoryPro</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Safe additions - only fonts and icons, no functionality -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
 
-<div style="display:flex; gap:30px;">
+<div class="container">
 
-    <div style="padding:20px; background:#eee;">
-        <h2>Total Customers</h2>
-        <h1>{{ total_customers }}</h1>
-        <a href="{% url 'customer_list' %}">View Customers</a>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>FactoryPro</h2>
+        </div>
+
+        <div class="sidebar-menu">
+            <a href="#" class="menu-item active">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'customer_list' %}" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>Customers</span>
+            </a>
+
+            <a href="{% url 'order_list' %}" class="menu-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div>
+                <h4>{{ request.user.username }}</h4>
+                <p>Marketing Head</p>
+            </div>
+        </div>
     </div>
 
-    <div style="padding:20px; background:#eee;">
-        <h2>Total Orders</h2>
-        <h1>{{ total_orders }}</h1>
-        <a href="{% url 'order_list' %}">View Orders</a>
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-left">
+                <h2>Marketing Head Dashboard</h2>
+            </div>
+            <div class="header-right">
+                <span class="date"><i class="fas fa-calendar-alt"></i> {{ now|date:"l, F j, Y" }}</span>
+            </div>
+        </div>
+
+        <!-- DASHBOARD BODY -->
+        <div class="dashboard-content">
+
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1>Welcome back, {{ request.user.username }}</h1>
+                <p>Track customers and orders from your dashboard.</p>
+            </div>
+
+            <!-- STATS & ACTION CARDS Combined -->
+            <div class="quick-stats">
+                
+                <!-- Total Customers Card with Link -->
+                <a href="{% url 'customer_list' %}" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <div class="card-icon" style="background: #eef2ff; color: #2563eb;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Total Customers</h3>
+                            <p style="font-size: 36px; font-weight: 700; color: #0f172a; margin: 10px 0 5px 0;">{{ total_customers }}</p>
+                            <p style="color: #10b981; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+                                <i class="fas fa-arrow-up"></i> Active
+                            </p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Total Orders Card with Link -->
+                <a href="{% url 'order_list' %}" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <div class="card-icon" style="background: #d1fae5; color: #10b981;">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Total Orders</h3>
+                            <p style="font-size: 36px; font-weight: 700; color: #0f172a; margin: 10px 0 5px 0;">{{ total_orders }}</p>
+                            <p style="color: #64748b; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+                                <i class="fas fa-clock"></i> All time
+                            </p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>© 2026 Factory Inventory System | Marketing Head</p>
+        </div>
+
     </div>
 
 </div>
+
+</body>
+</html>

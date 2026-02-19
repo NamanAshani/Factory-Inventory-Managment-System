@@ -1,25 +1,791 @@
-<!-- ORDER DETAILS PAGE -->
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Details | FactoryPro</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Safe additions - only fonts and icons, no functionality -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* PURE VISUAL CSS - No functionality changes */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0b1120 0%, #1a2639 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            position: relative;
+        }
+        
+        /* Decorative background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 32px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Header */
+        .detail-header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            padding: 30px 35px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .detail-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1));
+            transform: skewX(-20deg) translateX(100px);
+        }
+        
+        .detail-header h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .detail-header h1:before {
+            content: '\f07a';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 20px;
+        }
+        
+        /* Content */
+        .detail-content {
+            padding: 40px 35px;
+            position: relative;
+        }
+        
+        /* Floating icon background */
+        .detail-content::before {
+            content: '\f07a\f07a\f07a';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 120px;
+            color: rgba(37, 99, 235, 0.03);
+            pointer-events: none;
+            transform: rotate(-15deg);
+            z-index: 0;
+        }
+        
+        /* Section Title */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0 20px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+        
+        .section-title i {
+            font-size: 22px;
+            color: #2563eb;
+            background: #eef2ff;
+            padding: 12px;
+            border-radius: 14px;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .section-title:hover i {
+            transform: scale(1.1) rotate(5deg);
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .section-title h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .section-title:hover h2 {
+            color: #2563eb;
+            transform: translateX(5px);
+        }
+        
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .info-item {
+            background: #f8fafc;
+            padding: 18px 22px;
+            border-radius: 18px;
+            border-left: 5px solid #2563eb;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+        
+        .info-item:hover {
+            transform: translateY(-5px) translateX(8px);
+            box-shadow: 0 15px 30px -10px rgba(37, 99, 235, 0.3);
+            background: white;
+            border-left-width: 8px;
+        }
+        
+        .info-icon {
+            width: 45px;
+            height: 45px;
+            background: #eef2ff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563eb;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .info-item:hover .info-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .info-text {
+            flex: 1;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .info-item:hover .info-label {
+            color: #2563eb;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            transition: all 0.3s ease;
+        }
+        
+        .info-item:hover .info-value {
+            color: #1e293b;
+            transform: translateX(5px);
+        }
+        
+        /* Status badge styling */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .info-item:hover .status-badge {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        .info-item:hover .status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .info-item:hover .status-completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        .status-processing {
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+        }
+        
+        .info-item:hover .status-processing {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .info-item:hover .status-cancelled {
+            background: #ef4444;
+            color: white;
+        }
+        
+        /* Quantity grid */
+        .quantity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .quantity-item {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 20px;
+            border-radius: 18px;
+            text-align: center;
+            border-bottom: 4px solid #2563eb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .quantity-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(37, 99, 235, 0.3);
+            border-bottom-width: 8px;
+        }
+        
+        .quantity-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-item:hover .quantity-label {
+            color: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .quantity-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2563eb;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-item:hover .quantity-value {
+            transform: scale(1.1);
+            text-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+        }
+        
+        .quantity-value.pre { color: #f59e0b; }
+        .quantity-value.std { color: #10b981; }
+        .quantity-value.com { color: #8b5cf6; }
+        .quantity-value.eco { color: #ef4444; }
+        
+        .quantity-item:hover .quantity-value.pre {
+            color: #f59e0b;
+        }
+        
+        .quantity-item:hover .quantity-value.std {
+            color: #10b981;
+        }
+        
+        .quantity-item:hover .quantity-value.com {
+            color: #8b5cf6;
+        }
+        
+        .quantity-item:hover .quantity-value.eco {
+            color: #ef4444;
+        }
+        
+        /* Total quantity special */
+        .total-quantity {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            padding: 20px;
+            border-radius: 18px;
+            text-align: center;
+            margin: 15px 0 20px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .total-quantity:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+        }
+        
+        .total-quantity .quantity-label {
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .total-quantity:hover .quantity-label {
+            letter-spacing: 1px;
+        }
+        
+        .total-quantity .quantity-value {
+            color: white;
+            font-size: 32px;
+            transition: all 0.3s ease;
+        }
+        
+        .total-quantity:hover .quantity-value {
+            transform: scale(1.1);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Remark section */
+        .remark-item {
+            grid-column: span 2;
+            background: #fef3c7;
+            padding: 20px 25px;
+            border-radius: 18px;
+            border-left: 5px solid #f59e0b;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .remark-item:hover {
+            transform: translateY(-5px) translateX(8px);
+            box-shadow: 0 15px 30px -10px rgba(245, 158, 11, 0.3);
+            background: #fef3c7;
+            border-left-width: 8px;
+        }
+        
+        .remark-item .info-icon {
+            background: #fef3c7;
+            color: #f59e0b;
+            transition: all 0.3s ease;
+        }
+        
+        .remark-item:hover .info-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: #f59e0b;
+            color: white;
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+        
+        .remark-item .info-value {
+            color: #92400e;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .remark-item:hover .info-value {
+            color: #78350f;
+        }
+        
+        /* Back button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding: 12px 24px;
+            background: #f1f5f9;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            width: fit-content;
+        }
+        
+        .back-button:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button i {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .back-button:hover i {
+            transform: translateX(-3px);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .detail-header {
+                padding: 25px;
+            }
+            
+            .detail-header h1 {
+                font-size: 26px;
+            }
+            
+            .detail-content {
+                padding: 25px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quantity-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .total-quantity {
+                grid-column: span 1;
+            }
+            
+            .remark-item {
+                grid-column: span 1;
+            }
+            
+            .info-item {
+                padding: 15px;
+            }
+            
+            .quantity-value {
+                font-size: 24px;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .info-item, .quantity-item, .total-quantity, .remark-item, .section-title {
+            animation: fadeInUp 0.4s ease;
+            animation-fill-mode: both;
+        }
+        
+        .section-title:nth-of-type(1) { animation-delay: 0.05s; }
+        .info-item:nth-child(1) { animation-delay: 0.1s; }
+        .info-item:nth-child(2) { animation-delay: 0.15s; }
+        .info-item:nth-child(3) { animation-delay: 0.2s; }
+        .info-item:nth-child(4) { animation-delay: 0.25s; }
+        .info-item:nth-child(5) { animation-delay: 0.3s; }
+        .info-item:nth-child(6) { animation-delay: 0.35s; }
+        .section-title:nth-of-type(2) { animation-delay: 0.4s; }
+        .info-item:nth-child(7) { animation-delay: 0.45s; }
+        .info-item:nth-child(8) { animation-delay: 0.5s; }
+        .info-item:nth-child(9) { animation-delay: 0.55s; }
+        .info-item:nth-child(10) { animation-delay: 0.6s; }
+        .info-item:nth-child(11) { animation-delay: 0.65s; }
+        .section-title:nth-of-type(3) { animation-delay: 0.7s; }
+        .quantity-item:nth-child(1) { animation-delay: 0.75s; }
+        .quantity-item:nth-child(2) { animation-delay: 0.8s; }
+        .quantity-item:nth-child(3) { animation-delay: 0.85s; }
+        .quantity-item:nth-child(4) { animation-delay: 0.9s; }
+        .total-quantity { animation-delay: 0.95s; }
+        .remark-item { animation-delay: 1s; }
+    </style>
+</head>
+<body>
 
-<h1>Order Details</h1>
+<div class="container">
 
-<p><strong>Order ID:</strong> {{ order.ord_id }}</p>
-<p><strong>Customer:</strong> {{ order.cust_name }}</p>
-<p><strong>Product:</strong> {{ order.product }}</p>
-<p><strong>Status:</strong> {{ order.status }}</p>
-<p><strong>Category:</strong> {{ order.catagory }}</p>
+    <div class="detail-header">
+        <h1>Order Details</h1>
+    </div>
 
-<p><strong>Country:</strong> {{ order.country }}</p>
-<p><strong>State:</strong> {{ order.state }}</p>
-<p><strong>City:</strong> {{ order.city }}</p>
-<p><strong>Address:</strong> {{ order.address }}</p>
-<p><strong>Pincode:</strong> {{ order.pincode }}</p>
+    <div class="detail-content">
 
-<p><strong>Pre Qty:</strong> {{ order.pre_quantity }}</p>
-<p><strong>Std Qty:</strong> {{ order.std_quantity }}</p>
-<p><strong>Com Qty:</strong> {{ order.com_quantity }}</p>
-<p><strong>Eco Qty:</strong> {{ order.eco_quantity }}</p>
+        <!-- Back Button (Optional - uncomment if you have order list URL) -->
+        <!-- <a href="{% url 'order_list' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Orders
+        </a> -->
 
-<p><strong>Total Quantity:</strong> {{ order.total_quantity }}</p>
+        <!-- Order Basic Information -->
+        <div class="section-title">
+            <i class="fas fa-info-circle"></i>
+            <h2>Basic Information</h2>
+        </div>
 
-<p><strong>Invoice No:</strong> {{ order.invoice_no }}</p>
-<p><strong>Remark:</strong> {{ order.remark }}</p>
+        <div class="info-grid">
+            <!-- Order ID -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-hashtag"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Order ID</div>
+                    <div class="info-value">{{ order.ord_id }}</div>
+                </div>
+            </div>
+
+            <!-- Customer -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-user"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Customer</div>
+                    <div class="info-value">{{ order.cust_name }}</div>
+                </div>
+            </div>
+
+            <!-- Product -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-box"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Product</div>
+                    <div class="info-value">{{ order.product }}</div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-clock"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Status</div>
+                    <div class="info-value">
+                        <span class="status-badge 
+                            {% if order.status == 'Pending' %}status-pending
+                            {% elif order.status == 'Completed' %}status-completed
+                            {% elif order.status == 'Processing' %}status-processing
+                            {% elif order.status == 'Cancelled' %}status-cancelled
+                            {% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-tag"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Category</div>
+                    <div class="info-value">{{ order.catagory }}</div>
+                </div>
+            </div>
+
+            <!-- Invoice No -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-file-invoice"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Invoice No</div>
+                    <div class="info-value">{{ order.invoice_no }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Information -->
+        <div class="section-title">
+            <i class="fas fa-map-marker-alt"></i>
+            <h2>Location Details</h2>
+        </div>
+
+        <div class="info-grid">
+            <!-- Country -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-globe"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Country</div>
+                    <div class="info-value">{{ order.country }}</div>
+                </div>
+            </div>
+
+            <!-- State -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-map"></i></div>
+                <div class="info-text">
+                    <div class="info-label">State</div>
+                    <div class="info-value">{{ order.state }}</div>
+                </div>
+            </div>
+
+            <!-- City -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-city"></i></div>
+                <div class="info-text">
+                    <div class="info-label">City</div>
+                    <div class="info-value">{{ order.city }}</div>
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div class="info-item" style="grid-column: span 2;">
+                <div class="info-icon"><i class="fas fa-home"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Address</div>
+                    <div class="info-value">{{ order.address }}</div>
+                </div>
+            </div>
+
+            <!-- Pincode -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-mail-bulk"></i></div>
+                <div class="info-text">
+                    <div class="info-label">Pincode</div>
+                    <div class="info-value">{{ order.pincode }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quantity Information -->
+        <div class="section-title">
+            <i class="fas fa-weight"></i>
+            <h2>Quantity Details</h2>
+        </div>
+
+        <div class="quantity-grid">
+            <!-- Pre Quantity -->
+            <div class="quantity-item">
+                <div class="quantity-label">Pre Quantity</div>
+                <div class="quantity-value pre">{{ order.pre_quantity }}</div>
+            </div>
+
+            <!-- Std Quantity -->
+            <div class="quantity-item">
+                <div class="quantity-label">Std Quantity</div>
+                <div class="quantity-value std">{{ order.std_quantity }}</div>
+            </div>
+
+            <!-- Com Quantity -->
+            <div class="quantity-item">
+                <div class="quantity-label">Com Quantity</div>
+                <div class="quantity-value com">{{ order.com_quantity }}</div>
+            </div>
+
+            <!-- Eco Quantity -->
+            <div class="quantity-item">
+                <div class="quantity-label">Eco Quantity</div>
+                <div class="quantity-value eco">{{ order.eco_quantity }}</div>
+            </div>
+        </div>
+
+        <!-- Total Quantity -->
+        <div class="total-quantity">
+            <div class="quantity-label">Total Quantity</div>
+            <div class="quantity-value">{{ order.total_quantity }}</div>
+        </div>
+
+        <!-- Remark -->
+        {% if order.remark %}
+        <div class="remark-item">
+            <div class="info-icon"><i class="fas fa-quote-right"></i></div>
+            <div class="info-text">
+                <div class="info-label">Remark</div>
+                <div class="info-value">{{ order.remark }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
