@@ -42,19 +42,19 @@ def login_view(request):
                 return redirect("md_dashboard")
 
             elif user.groups.filter(name="Management Head").exists():
-                return redirect("/management_dashboard")
+                return redirect("/mh_dashboard")
 
             elif user.groups.filter(name="Marketing Head").exists():
-                return redirect("/marketing_dashboard")
+                return redirect("/mar_h_dashboard")
             
             elif user.groups.filter(name="Purchase Head").exists():
                 return redirect("ph_dashboard")
             
             elif user.groups.filter(name="Account Head").exists():
-                return redirect("/account_dashboard")
+                return redirect("/ah_dashboard")
             
             elif user.groups.filter(name="Dispatch Head").exists():
-                return redirect("/dispatch_dashboard")
+                return redirect("/dh_dashboard")
 
             # fallback redirect
             else:
@@ -71,6 +71,20 @@ def login_view(request):
     return render(request, "login.html")
 
 
+def ah_dashboard(request):
+    return render(request, "Admin/ah_dashboard.html")
+
+def dh_dashboard(request):
+    return render(request, "Admin/dh_dashboard.html")
+    
+def mar_h_dashboard(request):
+    return render(request, "Admin/mar_h_dashboard.html")
+
+def md_dashboard(request):
+    return render(request, "Admin/md_dashboard.html")
+
+def mh_dashboard(request):
+    return render(request, "Admin/mh_dashboard.html")
+
 def ph_dashboard(request):
     return render(request, "Admin/ph_dashboard.html")
-

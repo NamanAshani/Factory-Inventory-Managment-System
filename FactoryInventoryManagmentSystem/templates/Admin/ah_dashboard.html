@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Head Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="sidebar">
+
+        <div class="logo">
+            <h2>FactoryPro</h2>
+        </div>
+
+        <div class="sidebar-menu">
+
+            <a href="#" class="menu-item active">
+                Dashboard
+            </a>
+
+            <a href="{% url 'invoice_list' %}" class="menu-item">
+                Invoices
+            </a>
+
+            <a href="{% url 'create_invoice' %}" class="menu-item">
+                Create Invoice
+            </a>
+
+            <a href="{% url 'payment_list' %}" class="menu-item">
+                Payments
+            </a>
+
+            <a href="{% url 'create_payment' %}" class="menu-item">
+                Add Payment
+            </a>
+
+        </div>
+
+        <div class="user-profile">
+            <h4>{{ request.user.username }}</h4>
+            <p>Account Head</p>
+        </div>
+
+    </div>
+
+
+    <div class="main-content">
+
+        <div class="header">
+            <h2>Account Head Dashboard</h2>
+        </div>
+
+        <div class="dashboard-content">
+
+            <div class="welcome-section">
+                <h1>Welcome {{ request.user.username }}</h1>
+                <p>Manage invoices, payments and FIFO allocation.</p>
+            </div>
+
+            <div class="quick-stats">
+
+                <a href="{% url 'invoice_list' %}" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <h3>Invoices</h3>
+                        <p>View all invoices</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'payment_list' %}" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <h3>Payments</h3>
+                        <p>Customer payments history</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'create_payment' %}" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <h3>Add Payment</h3>
+                        <p>Record new payment</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'create_invoice' %}" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <h3>Create Invoice</h3>
+                        <p>Generate billing invoice</p>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="footer">
+            © 2026 Factory Inventory System
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

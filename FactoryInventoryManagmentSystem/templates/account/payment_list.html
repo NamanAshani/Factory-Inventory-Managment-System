@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payments</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="main-content">
+    <div class="header">
+        <h2>Payment List</h2>
+        <a class="menu-item active" href="{% url 'create_payment' %}">+ Add Payment</a>
+    </div>
+
+    <div class="dashboard-content">
+        <table class="data-table">
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.id }}</td>
+                <td>{{ payment.customer }}</td>
+                <td>{{ payment.amount }}</td>
+                <td>{{ payment.payment_date }}</td>
+                <td>
+                    <a href="{% url 'payment_detail' payment.id %}">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

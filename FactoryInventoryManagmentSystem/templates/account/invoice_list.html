@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoices</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="main-content">
+    <div class="header">
+        <h2>Invoice List</h2>
+        <a class="menu-item active" href="{% url 'create_invoice' %}">+ Create Invoice</a>
+    </div>
+
+    <div class="dashboard-content">
+        <table class="data-table">
+            <tr>
+                <th>Invoice No</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            {% for invoice in invoices %}
+            <tr>
+                <td>{{ invoice.invoice_number }}</td>
+                <td>{{ invoice.customer }}</td>
+                <td>{{ invoice.total_amount }}</td>
+                <td>{{ invoice.status }}</td>
+                <td>
+                    <a href="{% url 'invoice_detail' invoice.id %}">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

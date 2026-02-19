@@ -23,7 +23,7 @@ class Order(models.Model):
     ref_party = models.CharField(max_length=255)
     order_type = models.CharField(max_length=50)
     order_status = models.CharField(max_length=50)
-    invioce_no = models.IntegerField()
+    invoice_no = models.CharField(max_length=50,null=True, blank=True)
     remark = models.CharField(max_length=255)
     mrp_zone = models.CharField(max_length=50)
     size = models.CharField(max_length=20)
