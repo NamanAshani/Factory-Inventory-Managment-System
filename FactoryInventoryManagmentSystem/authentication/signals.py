@@ -16,7 +16,8 @@ def create_default_users(sender, **kwargs):
         "Dispatch Head",
         "Account Head",
         "Marketing Head",
-        "Purchase Head"
+        "Purchase Head",
+        "Marketing Head"
     ]
 
     # create groups safely

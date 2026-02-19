@@ -4,37 +4,45 @@
 <head>
     <title>Purchase Head Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Add Google Fonts for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Add Font Awesome for minimal icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
 <div class="container">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR - Cleaner design -->
     <div class="sidebar">
         <div class="logo">
             <h2>FactoryPro</h2>
         </div>
 
         <div class="sidebar-menu">
-
             <a href="#" class="menu-item active">
+                <i class="fas fa-th-large"></i>
                 <span>Dashboard</span>
             </a>
 
             <!-- View Orders -->
             <a href="{% url 'order_home' %}" class="menu-item">
+                <i class="fas fa-box"></i>
                 <span>View Orders</span>
             </a>
 
             <!-- Manage Orders -->
             <a href="{% url 'order_home' %}" class="menu-item">
+                <i class="fas fa-edit"></i>
                 <span>Manage Orders</span>
             </a>
-
         </div>
 
         <div class="user-profile">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
             <div>
                 <h4>{{ request.user.username }}</h4>
                 <p>Purchase Head</p>
@@ -45,28 +53,33 @@
     <!-- MAIN CONTENT -->
     <div class="main-content">
 
-        <!-- HEADER -->
+        <!-- HEADER - Cleaner -->
         <div class="header">
             <div class="header-left">
                 <h2>Purchase Head Dashboard</h2>
             </div>
-
+            <div class="header-right">
+                <span class="date">{{ now|date:"l, F j, Y" }}</span>
+            </div>
         </div>
 
         <!-- DASHBOARD BODY -->
         <div class="dashboard-content">
 
             <div class="welcome-section">
-                <h1>Welcome {{ request.user.username }}</h1>
+                <h1>Welcome back, {{ request.user.username }}</h1>
                 <p>You can manage and view all purchase orders here.</p>
             </div>
 
-            <!-- QUICK ACTION CARDS -->
+            <!-- QUICK ACTION CARDS - Enhanced visuals -->
             <div class="quick-stats">
 
                 <!-- View Orders Card -->
                 <a href="{% url 'order_home' %}" style="text-decoration:none;">
                     <div class="stat-card">
+                        <div class="card-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
                         <div>
                             <h3>View Orders</h3>
                             <p>See all order details</p>
@@ -77,6 +90,9 @@
                 <!-- Manage Orders Card -->
                 <a href="{% url 'order_home' %}" style="text-decoration:none;">
                     <div class="stat-card">
+                        <div class="card-icon manage-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
                         <div>
                             <h3>Manage Orders</h3>
                             <p>Approve / Update Orders</p>

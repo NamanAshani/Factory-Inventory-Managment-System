@@ -2,38 +2,475 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Invoices</title>
+    <title>Invoices | FactoryPro</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Safe additions - only fonts and icons, no functionality -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* PURE VISUAL CSS - No functionality changes */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0b1120 0%, #1a2639 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            position: relative;
+        }
+        
+        /* Decorative background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 32px;
+            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: white;
+            padding: 30px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+        
+        .header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header h2:before {
+            content: '\f15c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 28px;
+            color: #2563eb;
+            background: #eef2ff;
+            padding: 12px;
+            border-radius: 16px;
+        }
+        
+        /* Style the create button */
+        .menu-item.active {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+            border: none;
+        }
+        
+        .menu-item.active i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .menu-item.active:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+        }
+        
+        .menu-item.active:hover i {
+            transform: rotate(90deg);
+        }
+        
+        .menu-item.active:active {
+            transform: translateY(-1px);
+        }
+        
+        .dashboard-content {
+            padding: 35px;
+            background: white;
+        }
+        
+        /* Enhanced table styling */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            margin: 0;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        .data-table th:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+        
+        .data-table th:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .data-table tr {
+            background: #ffffff;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid #f1f5f9;
+        }
+        
+        .data-table tr:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px -8px rgba(0, 0, 0, 0.15);
+            border-color: #2563eb;
+        }
+        
+        .data-table td {
+            padding: 20px;
+            font-size: 15px;
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .data-table td:first-child {
+            font-weight: 600;
+            color: #2563eb;
+        }
+        
+        /* Status badge styling */
+        .data-table td:nth-child(4) {
+            font-weight: 600;
+        }
+        
+        .data-table td:nth-child(4):contains("Paid") {
+            color: #10b981;
+        }
+        
+        .data-table td:nth-child(4):contains("Pending") {
+            color: #f59e0b;
+        }
+        
+        .data-table td:nth-child(4):contains("Overdue") {
+            color: #ef4444;
+        }
+        
+        /* Action link styling */
+        .data-table td:last-child a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: #eef2ff;
+            color: #2563eb;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .data-table td:last-child a:hover {
+            background: #2563eb;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .data-table td:last-child a:after {
+            content: '\f061';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .data-table td:last-child a:hover:after {
+            transform: translateX(5px);
+        }
+        
+        /* Amount styling */
+        .data-table td:nth-child(3) {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 16px;
+        }
+        
+        .data-table td:nth-child(3):before {
+            content: '₹';
+            margin-right: 4px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        /* Add subtle icons to table headers */
+        .data-table th:nth-child(1):before {
+            content: '\f07b';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 8px;
+            color: #2563eb;
+        }
+        
+        .data-table th:nth-child(2):before {
+            content: '\f007';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 8px;
+            color: #10b981;
+        }
+        
+        .data-table th:nth-child(3):before {
+            content: '\f51e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 8px;
+            color: #f59e0b;
+        }
+        
+        .data-table th:nth-child(4):before {
+            content: '\f0e7';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 8px;
+            color: #8b5cf6;
+        }
+        
+        .data-table th:nth-child(5):before {
+            content: '\f013';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 8px;
+            color: #ef4444;
+        }
+        
+        /* Empty state styling */
+        .data-table:empty + p {
+            text-align: center;
+            padding: 60px;
+            background: #f8fafc;
+            border-radius: 20px;
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            body {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 25px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .menu-item.active {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-content {
+                padding: 20px;
+                overflow-x: auto;
+            }
+            
+            .data-table {
+                min-width: 700px;
+            }
+            
+            .header h2 {
+                font-size: 26px;
+            }
+        }
+        
+        /* Add a subtle background pattern */
+        .main-content {
+            position: relative;
+        }
+        
+        .main-content::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        /* Style for status text with badges */
+        .data-table td:nth-child(4) {
+            position: relative;
+        }
+        
+        .data-table td:nth-child(4) span.status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        /* Animation for new rows */
+        @keyframes rowAppear {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .data-table tr {
+            animation: rowAppear 0.4s ease;
+            animation-fill-mode: both;
+        }
+        
+        .data-table tr:nth-child(1) { animation-delay: 0.1s; }
+        .data-table tr:nth-child(2) { animation-delay: 0.2s; }
+        .data-table tr:nth-child(3) { animation-delay: 0.3s; }
+        .data-table tr:nth-child(4) { animation-delay: 0.4s; }
+        .data-table tr:nth-child(5) { animation-delay: 0.5s; }
+        
+        /* Add floating invoice icons background */
+        .main-content::before {
+            content: '\f15c\f15c\f15c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 120px;
+            color: rgba(37, 99, 235, 0.02);
+            pointer-events: none;
+            transform: rotate(-15deg);
+            z-index: 0;
+        }
+    </style>
 </head>
 <body>
 
 <div class="main-content">
     <div class="header">
         <h2>Invoice List</h2>
-        <a class="menu-item active" href="{% url 'create_invoice' %}">+ Create Invoice</a>
+        <a class="menu-item active" href="{% url 'create_invoice' %}">
+            <i class="fas fa-plus"></i> Create Invoice
+        </a>
     </div>
 
     <div class="dashboard-content">
         <table class="data-table">
-            <tr>
-                <th>Invoice No</th>
-                <th>Customer</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-
-            {% for invoice in invoices %}
-            <tr>
-                <td>{{ invoice.invoice_number }}</td>
-                <td>{{ invoice.customer }}</td>
-                <td>{{ invoice.total_amount }}</td>
-                <td>{{ invoice.status }}</td>
-                <td>
-                    <a href="{% url 'invoice_detail' invoice.id %}">View</a>
-                </td>
-            </tr>
-            {% endfor %}
+            <thead>
+                <tr>
+                    <th>Invoice No</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in invoices %}
+                <tr>
+                    <td><span class="invoice-number">{{ invoice.invoice_number }}</span></td>
+                    <td>{{ invoice.customer }}</td>
+                    <td>₹{{ invoice.total_amount }}</td>
+                    <td>
+                        <span class="status-badge 
+                            {% if invoice.status == 'Paid' %}status-paid
+                            {% elif invoice.status == 'Pending' %}status-pending
+                            {% elif invoice.status == 'Overdue' %}status-overdue
+                            {% endif %}">
+                            {{ invoice.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'invoice_detail' invoice.id %}" class="view-link">View</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 60px; color: #64748b;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px; color: #cbd5e1;"></i>
+                        <br>No invoices found
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 </div>

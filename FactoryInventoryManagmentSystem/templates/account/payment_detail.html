@@ -2,17 +2,378 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Payment Detail</title>
+    <title>Payment Detail | FactoryPro</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Safe additions - only fonts and icons, no functionality -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* PURE VISUAL CSS - No functionality changes */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Decorative background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .dashboard-content {
+            max-width: 550px;
+            width: 100%;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+            padding: 45px;
+            position: relative;
+            z-index: 1;
+            animation: slideUpFade 0.6s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dashboard-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            letter-spacing: -0.5px;
+        }
+        
+        .dashboard-content h2:before {
+            content: '\f53a';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 32px;
+            color: #2563eb;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+        }
+        
+        /* Style the payment ID badge */
+        .dashboard-content h2 span {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-left: 10px;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        /* Style each detail row */
+        .dashboard-content p {
+            margin: 0 0 20px 0;
+            padding: 20px 25px;
+            background: #f8fafc;
+            border-radius: 24px;
+            border-left: 8px solid #2563eb;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-content p:hover {
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 15px 30px -10px rgba(37, 99, 235, 0.2);
+            background: white;
+        }
+        
+        /* Add shine effect on hover */
+        .dashboard-content p::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: transform 0.6s ease;
+            opacity: 0;
+        }
+        
+        .dashboard-content p:hover::after {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+        
+        .dashboard-content p b {
+            min-width: 120px;
+            color: #475569;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+        
+        /* Add icons to labels */
+        .dashboard-content p:nth-of-type(1) b:before {
+            content: '\f007';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 12px;
+            color: #2563eb;
+            font-size: 16px;
+            background: #eef2ff;
+            padding: 8px;
+            border-radius: 12px;
+            width: 32px;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .dashboard-content p:nth-of-type(2) b:before {
+            content: '\f51e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 12px;
+            color: #10b981;
+            font-size: 16px;
+            background: #d1fae5;
+            padding: 8px;
+            border-radius: 12px;
+            width: 32px;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .dashboard-content p:nth-of-type(3) b:before {
+            content: '\f073';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 12px;
+            color: #f59e0b;
+            font-size: 16px;
+            background: #fef3c7;
+            padding: 8px;
+            border-radius: 12px;
+            width: 32px;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        /* Style the values */
+        .dashboard-content p span {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 18px;
+            margin-left: 15px;
+            flex: 1;
+        }
+        
+        /* Special styling for amount */
+        .dashboard-content p:nth-of-type(2) span {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2563eb;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .dashboard-content p:nth-of-type(2) span:before {
+            content: '₹';
+            font-size: 20px;
+            margin-right: 5px;
+            color: #2563eb;
+            -webkit-text-fill-color: #2563eb;
+        }
+        
+        /* Styling for date */
+        .dashboard-content p:nth-of-type(3) span {
+            color: #f59e0b;
+            font-weight: 600;
+            background: #fef3c7;
+            padding: 8px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            font-size: 16px;
+        }
+        
+        /* Add a decorative payment icon */
+        .dashboard-content::before {
+            content: '\f53a';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 100px;
+            color: rgba(37, 99, 235, 0.03);
+            pointer-events: none;
+            transform: rotate(15deg);
+        }
+        
+        /* Add back button style (hidden but preserved for future) */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 25px;
+            padding: 12px 24px;
+            background: #f1f5f9;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 40px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateX(-5px);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .dashboard-content {
+                padding: 30px;
+            }
+            
+            .dashboard-content h2 {
+                font-size: 28px;
+                flex-wrap: wrap;
+            }
+            
+            .dashboard-content p {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 18px;
+            }
+            
+            .dashboard-content p b {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+            
+            .dashboard-content p span {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .dashboard-content p:nth-of-type(2) span {
+                font-size: 22px;
+            }
+        }
+        
+        /* Add subtle animation for values */
+        @keyframes valuePop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .dashboard-content p:nth-of-type(2) span {
+            animation: valuePop 0.5s ease 0.3s;
+        }
+        
+        /* Style for empty values */
+        .dashboard-content p span:empty {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        /* Add a subtle gradient border */
+        .dashboard-content {
+            position: relative;
+            background-clip: padding-box;
+            border: solid 2px transparent;
+        }
+        
+        .dashboard-content:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: -2px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, #2563eb, #4f46e5, #7c3aed);
+            opacity: 0.2;
+            z-index: -1;
+        }
+    </style>
 </head>
 <body>
 
 <div class="dashboard-content">
-    <h2>Payment {{ payment.id }}</h2>
+    <h2>
+        Payment Details
+        <span>#{{ payment.id }}</span>
+    </h2>
 
-    <p><b>Customer:</b> {{ payment.customer }}</p>
-    <p><b>Amount:</b> {{ payment.amount }}</p>
-    <p><b>Date:</b> {{ payment.payment_date }}</p>
+    <p><b>Customer:</b> <span>{{ payment.customer }}</span></p>
+    <p><b>Amount:</b> <span>{{ payment.amount }}</span></p>
+    <p><b>Date:</b> <span>{{ payment.payment_date }}</span></p>
 
 </div>
 

@@ -2,92 +2,135 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Account Head Dashboard</title>
+    <title>Account Head Dashboard | FactoryPro</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Add Google Fonts and Font Awesome for better typography and icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
 <div class="container">
 
+    <!-- SIDEBAR - Enhanced with icons only -->
     <div class="sidebar">
-
         <div class="logo">
             <h2>FactoryPro</h2>
         </div>
 
         <div class="sidebar-menu">
-
             <a href="#" class="menu-item active">
-                Dashboard
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
             </a>
 
             <a href="{% url 'invoice_list' %}" class="menu-item">
-                Invoices
+                <i class="fas fa-file-invoice"></i>
+                <span>Invoices</span>
             </a>
 
             <a href="{% url 'create_invoice' %}" class="menu-item">
-                Create Invoice
+                <i class="fas fa-plus-circle"></i>
+                <span>Create Invoice</span>
             </a>
 
             <a href="{% url 'payment_list' %}" class="menu-item">
-                Payments
+                <i class="fas fa-credit-card"></i>
+                <span>Payments</span>
             </a>
 
             <a href="{% url 'create_payment' %}" class="menu-item">
-                Add Payment
+                <i class="fas fa-wallet"></i>
+                <span>Add Payment</span>
             </a>
-
         </div>
 
         <div class="user-profile">
-            <h4>{{ request.user.username }}</h4>
-            <p>Account Head</p>
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div>
+                <h4>{{ request.user.username }}</h4>
+                <p>Account Head</p>
+            </div>
         </div>
-
     </div>
 
-
+    <!-- MAIN CONTENT -->
     <div class="main-content">
 
+        <!-- HEADER - Enhanced with date -->
         <div class="header">
-            <h2>Account Head Dashboard</h2>
+            <div class="header-left">
+                <h2>Account Head Dashboard</h2>
+            </div>
+            <div class="header-right">
+                <span class="date"><i class="fas fa-calendar-alt"></i> {{ now|date:"l, F j, Y" }}</span>
+            </div>
         </div>
 
+        <!-- DASHBOARD BODY -->
         <div class="dashboard-content">
 
+            <!-- Welcome Section - Enhanced -->
             <div class="welcome-section">
-                <h1>Welcome {{ request.user.username }}</h1>
+                <h1>Welcome back, {{ request.user.username }}</h1>
                 <p>Manage invoices, payments and FIFO allocation.</p>
             </div>
 
+            <!-- QUICK ACTION CARDS - Enhanced with icons and better styling -->
             <div class="quick-stats">
 
+                <!-- Invoices Card -->
                 <a href="{% url 'invoice_list' %}" style="text-decoration:none;">
                     <div class="stat-card">
-                        <h3>Invoices</h3>
-                        <p>View all invoices</p>
+                        <div class="card-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div>
+                            <h3>Invoices</h3>
+                            <p>View all invoices</p>
+                        </div>
                     </div>
                 </a>
 
+                <!-- Payments Card -->
                 <a href="{% url 'payment_list' %}" style="text-decoration:none;">
                     <div class="stat-card">
-                        <h3>Payments</h3>
-                        <p>Customer payments history</p>
+                        <div class="card-icon" style="background: #d1fae5; color: #10b981;">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div>
+                            <h3>Payments</h3>
+                            <p>Customer payments history</p>
+                        </div>
                     </div>
                 </a>
 
+                <!-- Add Payment Card -->
                 <a href="{% url 'create_payment' %}" style="text-decoration:none;">
                     <div class="stat-card">
-                        <h3>Add Payment</h3>
-                        <p>Record new payment</p>
+                        <div class="card-icon" style="background: #fef3c7; color: #d97706;">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div>
+                            <h3>Add Payment</h3>
+                            <p>Record new payment</p>
+                        </div>
                     </div>
                 </a>
 
+                <!-- Create Invoice Card -->
                 <a href="{% url 'create_invoice' %}" style="text-decoration:none;">
                     <div class="stat-card">
-                        <h3>Create Invoice</h3>
-                        <p>Generate billing invoice</p>
+                        <div class="card-icon" style="background: #f3e8ff; color: #8b5cf6;">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div>
+                            <h3>Create Invoice</h3>
+                            <p>Generate billing invoice</p>
+                        </div>
                     </div>
                 </a>
 
@@ -95,8 +138,9 @@
 
         </div>
 
+        <!-- FOOTER - Enhanced -->
         <div class="footer">
-            © 2026 Factory Inventory System
+            <p>© 2026 Factory Inventory System | Account Head Portal</p>
         </div>
 
     </div>

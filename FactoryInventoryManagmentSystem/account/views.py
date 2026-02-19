@@ -3,11 +3,6 @@ from .models import Invoice, Payment, PaymentAllocation
 from django import forms
 from django.contrib.auth.decorators import login_required
 
-
-# =====================================================
-# 🧾 FORMS (Simple ModelForms)
-# =====================================================
-
 class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
@@ -25,11 +20,6 @@ class PaymentForm(forms.ModelForm):
             "reference_no",
             "remarks",
         ]
-
-
-# =====================================================
-# 🧾 INVOICE VIEWS
-# =====================================================
 
 @login_required
 def invoice_list(request):
@@ -70,11 +60,6 @@ def invoice_detail(request, pk):
         "account/invoice_detail.html",
         {"invoice": invoice}
     )
-
-
-# =====================================================
-# 💰 PAYMENT VIEWS
-# =====================================================
 
 @login_required
 def payment_list(request):
@@ -121,10 +106,6 @@ def payment_detail(request, pk):
         {"payment": payment}
     )
 
-
-# =====================================================
-# 🔥 FIFO ALLOCATION LOGIC (CORE ERP PART)
-# =====================================================
 
 def allocate_fifo(payment):
 

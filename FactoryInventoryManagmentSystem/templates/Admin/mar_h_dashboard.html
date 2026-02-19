@@ -1,0 +1,17 @@
+<h1>Marketing Head Dashboard</h1>
+
+<div style="display:flex; gap:30px;">
+
+    <div style="padding:20px; background:#eee;">
+        <h2>Total Customers</h2>
+        <h1>{{ total_customers }}</h1>
+        <a href="{% url 'customer_list' %}">View Customers</a>
+    </div>
+
+    <div style="padding:20px; background:#eee;">
+        <h2>Total Orders</h2>
+        <h1>{{ total_orders }}</h1>
+        <a href="{% url 'order_list' %}">View Orders</a>
+    </div>
+
+</div>

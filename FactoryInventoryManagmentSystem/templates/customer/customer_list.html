@@ -1,0 +1,33 @@
+<!-- CUSTOMER LIST PAGE -->
+
+<h1>Customer List</h1>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>City</th>
+        <th>Phone</th>
+        <th>Total Quantity</th>
+        <th>Action</th>
+    </tr>
+
+    {% for c in customers %}
+    <tr>
+        <td>{{ c.customer_id }}</td>
+        <td>{{ c.customer_name }}</td>
+        <td>{{ c.customer_city }}</td>
+        <td>{{ c.phone_no }}</td>
+        <td>{{ c.cus_quantity }}</td>
+        <td>
+            <a href="{% url 'customer_details' c.customer_id %}">
+                View Details
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">No Customers Found</td>
+    </tr>
+    {% endfor %}
+</table>
