@@ -93,8 +93,8 @@ def add_product(request):
 
     if form.is_valid():
         product = form.save()
-
-        Stock.objects.create(product=product)       
+        if not Stock.objects.filter(product=product).exists():
+            Stock.objects.create(product=product)       
         return redirect('index')  # change to your dashboard url name
 
     return render(request, 'Stock/add_product.html', {'form': form})
