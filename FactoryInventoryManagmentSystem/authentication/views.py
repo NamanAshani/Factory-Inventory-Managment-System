@@ -1,5 +1,6 @@
 # import render and redirect for page navigation
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 # import authenticate and login functions
 from django.contrib.auth import authenticate, login
@@ -11,7 +12,11 @@ from django.contrib import messages
 from customer.models import Customer
 from order.models import Order
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import logout
 
+def logout_view(request):
+    logout(request)   # destroys session
+    return redirect("login")
 
 # login view function
 def login_view(request):
@@ -76,9 +81,11 @@ def login_view(request):
     return render(request, "login.html")
 
 
+@login_required(login_url="login")
 def ah_dashboard(request):
     return render(request, "Admin/ah_dashboard.html")
 
+@login_required(login_url="login")
 def dh_dashboard(request):
     return render(request, "Admin/dh_dashboard.html")
 
@@ -95,12 +102,14 @@ def mar_h_dashboard(request):
 
     return render(request, "Admin/mar_h_dashboard.html", context)
 
-
+@login_required(login_url="login")
 def md_dashboard(request):
     return render(request, "Admin/md_dashboard.html")
 
+@login_required(login_url="login")
 def mh_dashboard(request):
     return render(request, "Admin/mh_dashboard.html")
 
+@login_required(login_url="login")
 def ph_dashboard(request):
     return render(request, "Admin/ph_dashboard.html")

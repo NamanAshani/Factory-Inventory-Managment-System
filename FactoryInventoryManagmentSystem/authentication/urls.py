@@ -9,4 +9,5 @@ urlpatterns = [
     path("md_dashboard/", views.md_dashboard, name="md_dashboard"),
     path("mh_dashboard/", views.mh_dashboard, name="mh_dashboard"),
     path("ph_dashboard/", views.ph_dashboard, name="ph_dashboard"),
+    path("logout/", views.logout_view, name="logout"),
 ]

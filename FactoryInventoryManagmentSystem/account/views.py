@@ -21,7 +21,7 @@ class PaymentForm(forms.ModelForm):
             "remarks",
         ]
 
-@login_required
+@login_required(login_url="login")
 def invoice_list(request):
 
     invoices = Invoice.objects.all().order_by("-created_at")
@@ -33,7 +33,7 @@ def invoice_list(request):
     )
 
 
-@login_required
+@login_required(login_url="login")
 def create_invoice(request):
 
     form = InvoiceForm(request.POST or None)
@@ -50,7 +50,7 @@ def create_invoice(request):
     )
 
 
-@login_required
+@login_required(login_url="login")
 def invoice_detail(request, pk):
 
     invoice = get_object_or_404(Invoice, id=pk)
@@ -61,7 +61,7 @@ def invoice_detail(request, pk):
         {"invoice": invoice}
     )
 
-@login_required
+@login_required(login_url="login")
 def payment_list(request):
 
     payments = Payment.objects.all().order_by("-created_at")
@@ -73,7 +73,7 @@ def payment_list(request):
     )
 
 
-@login_required
+@login_required(login_url="login")
 def create_payment(request):
 
     form = PaymentForm(request.POST or None)
@@ -95,7 +95,7 @@ def create_payment(request):
     )
 
 
-@login_required
+@login_required(login_url="login")
 def payment_detail(request, pk):
 
     payment = get_object_or_404(Payment, id=pk)
@@ -149,7 +149,7 @@ def allocate_fifo(payment):
         remaining_amount -= use_amount
 
 
-@login_required
+@login_required(login_url="login")  
 def allocate_payment_fifo(request, payment_id):
 
     payment = get_object_or_404(Payment, id=payment_id)

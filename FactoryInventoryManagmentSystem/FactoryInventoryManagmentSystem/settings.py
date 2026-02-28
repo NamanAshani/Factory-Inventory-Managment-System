@@ -129,6 +129,7 @@ STATIC_URL = 'static/'
 # Tell Django where your static folder is located
 STATICFILES_DIRS = [
     BASE_DIR / "static",
+    
 ]
 
 

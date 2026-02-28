@@ -1,4 +1,5 @@
 from django.contrib import admin
-from .models import Logistics
+from .models import Dispatch, DispatchItem
 
-admin.site.register(Logistics)
+admin.site.register(Dispatch)
+admin.site.register(DispatchItem)

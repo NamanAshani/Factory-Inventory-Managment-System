@@ -262,3 +262,20 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
+.logout-btn {
+    background-color: #1f2a44;
+    color: white;
+    border: 1px solid #3b4a6b;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+

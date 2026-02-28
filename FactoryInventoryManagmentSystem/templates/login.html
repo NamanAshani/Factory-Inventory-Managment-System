@@ -162,14 +162,15 @@
 
     <h2>{% block heading %}Welcome Back{% endblock %}</h2>
 
-    {% if messages %}
-        {% for message in messages %}
-            <p class="error-message">{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+   
 
     <form method="POST">
         {% csrf_token %}
+         {% if messages %}
+        {% for message in messages %}
+            <p class="error-message">{{ message }}</p>
+        {% endfor %}
+         {% endif %}
 
         <div class="form-group">
             <label>ID</label>

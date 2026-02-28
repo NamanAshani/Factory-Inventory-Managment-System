@@ -1,8 +1,10 @@
 from django.shortcuts import render,redirect
 from .models import Stock,Product
-from django.db.models import Sum
-from .forms import ProductForm, StockForm
+from .forms import ProductForm
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url="login")
 def index(request):
 
     stocks = Stock.objects.select_related('product').all()
@@ -87,7 +89,7 @@ def index(request):
 
 
 
-
+@login_required(login_url="login")
 def add_product(request):
     form = ProductForm(request.POST or None)
 
@@ -100,6 +102,8 @@ def add_product(request):
     return render(request, 'Stock/add_product.html', {'form': form})
 
 
+
+@login_required(login_url="login")
 def add_stock(request):
     products = Product.objects.all()
     if request.method == "POST":

@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from .models import Customer
 from django.shortcuts import get_object_or_404
 from order.models import Order
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url="login")
 def add_customer(request):
 
     if request.method == "POST":
@@ -29,7 +31,7 @@ def add_customer(request):
 
     return render(request, "customer/add_customer.html")
 
-
+@login_required(login_url="login")
 def customer_list(request):
 
     customers = Customer.objects.all().order_by('-customer_date')
@@ -39,6 +41,7 @@ def customer_list(request):
     })
 
 
+@login_required(login_url="login")
 def customer_details(request, pk):
 
     customer = get_object_or_404(Customer, pk=pk)
