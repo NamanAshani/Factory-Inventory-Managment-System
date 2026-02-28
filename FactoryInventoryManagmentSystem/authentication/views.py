@@ -14,11 +14,6 @@ from order.models import Order
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import logout
 
-<<<<<<< HEAD
-def logout_view(request):
-    logout(request)   # destroys session
-    return redirect("login")
-=======
 # for management director dashboard
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
@@ -26,7 +21,9 @@ from django.db.models.functions import TruncMonth
 from stock.models import Stock
 from account.models import Invoice
 
->>>>>>> cbe8583ba7110c53838edae3305863cceb2dcd50
+
+
+
 
 # login view function
 def login_view(request):
@@ -99,7 +96,7 @@ def ah_dashboard(request):
 def dh_dashboard(request):
     return render(request, "Admin/dh_dashboard.html")
 
-
+@login_required(login_url="login")
 def mar_h_dashboard(request):
 
     total_customers = Customer.objects.count()
@@ -112,17 +109,9 @@ def mar_h_dashboard(request):
 
     return render(request, "Admin/mar_h_dashboard.html", context)
 
-<<<<<<< HEAD
-@login_required(login_url="login")
-def md_dashboard(request):
-    return render(request, "Admin/md_dashboard.html")
+
 
 @login_required(login_url="login")
-=======
-
-
-
-@login_required
 def md_dashboard(request):
 
     # role protection (VERY IMPORTANT)
@@ -165,8 +154,7 @@ def md_dashboard(request):
 
 
 
-@login_required
->>>>>>> cbe8583ba7110c53838edae3305863cceb2dcd50
+@login_required(login_url="login")
 def mh_dashboard(request):
 
     # ---------------------------
