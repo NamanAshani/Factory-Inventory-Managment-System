@@ -17,16 +17,12 @@ def create_default_users(sender, **kwargs):
         "Account Head",
         "Marketing Head",
         "Purchase Head",
-        "Marketing Head"
+        "Logistic Head",
     ]
 
     # create groups safely
     for role in roles:
         Group.objects.get_or_create(name=role)
-
-    # ===============================
-    # CREATE DEFAULT USERS
-    # ===============================
 
     users_data = [
         ("director", "director@123", "Management Director"),
