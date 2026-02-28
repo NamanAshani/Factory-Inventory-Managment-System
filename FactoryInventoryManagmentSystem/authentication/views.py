@@ -12,6 +12,13 @@ from customer.models import Customer
 from order.models import Order
 from django.shortcuts import get_object_or_404
 
+# for management director dashboard
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+from stock.models import Stock
+from account.models import Invoice
+
 
 # login view function
 def login_view(request):
@@ -96,11 +103,86 @@ def mar_h_dashboard(request):
     return render(request, "Admin/mar_h_dashboard.html", context)
 
 
-def md_dashboard(request):
-    return render(request, "Admin/md_dashboard.html")
 
+
+@login_required
+def md_dashboard(request):
+
+    # role protection (VERY IMPORTANT)
+    if not request.user.groups.filter(name="Management Director").exists():
+        return redirect("login")
+
+    # total orders
+    total_orders = Order.objects.count()
+
+    # total revenue
+    total_revenue = Invoice.objects.aggregate(
+        Sum("total_amount")
+    )["total_amount__sum"] or 0
+
+    # total pending (using balance property)
+    total_pending = sum(
+        invoice.balance_amount for invoice in Invoice.objects.all()
+    )
+
+    # total stock
+    total_stock = Stock.objects.aggregate(
+        Sum("total_quantity")
+    )["total_quantity__sum"] or 0
+
+    # recent orders
+    recent_orders = Order.objects.order_by("-ord_date")[:5]
+
+    # top customers
+    top_customers = Customer.objects.order_by("-cus_quantity")[:5]
+
+    context = {
+        "total_orders": total_orders,
+        "total_revenue": total_revenue,
+        "total_pending": total_pending,
+        "total_stock": total_stock,
+        "recent_orders": recent_orders,
+        "top_customers": top_customers,
+    }
+    return render(request, "Admin/md_dashboard.html", context)
+
+
+
+@login_required
 def mh_dashboard(request):
-    return render(request, "Admin/mh_dashboard.html")
+
+    # ---------------------------
+    # SUMMARY DATA
+    # ---------------------------
+
+    total_orders = Order.objects.count()
+
+    pending_orders = Order.objects.filter(status="pending").count()
+
+    delivered_orders = Order.objects.filter(status="delivered").count()
+
+    total_stock = Stock.objects.aggregate(
+        Sum("total_quantity")
+    )["total_quantity__sum"] or 0
+
+    # ---------------------------
+    # RECENT ORDERS
+    # ---------------------------
+
+    recent_orders = Order.objects.select_related(
+        "cust_name",
+        "product"
+    ).order_by("-ord_date")[:5]
+
+    context = {
+        "total_orders": total_orders,
+        "pending_orders": pending_orders,
+        "delivered_orders": delivered_orders,
+        "total_stock": total_stock,
+        "recent_orders": recent_orders,
+    }
+
+    return render(request, "Admin/mh_dashboard.html", context)
 
 def ph_dashboard(request):
     return render(request, "Admin/ph_dashboard.html")

@@ -1,0 +1,303 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Managing Director Dashboard | FactoryPro</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Safe additions - only fonts and icons, no functionality -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR - Same as other dashboards -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>FactoryPro</h2>
+        </div>
+
+        <div class="sidebar-menu">
+            <a href="#" class="menu-item active">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- Orders -->
+            <a href="{% url 'order_list' %}" class="menu-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+
+            <!-- Stock -->
+            <a href="/stock/" class="menu-item">
+                <i class="fas fa-boxes"></i>
+                <span>Stock</span>
+            </a>
+
+            <!-- Customers -->
+            <a href="{% url 'customer_list' %}" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>Customers</span>
+            </a>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div>
+                <h4>{{ request.user.username }}</h4>
+                <p>Managing Director</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-left">
+                <h2>Managing Director Dashboard</h2>
+            </div>
+            <div class="header-right">
+                <span class="date"><i class="fas fa-calendar-alt"></i> {{ now|date:"l, F j, Y" }}</span>
+            </div>
+        </div>
+
+        <!-- DASHBOARD BODY -->
+        <div class="dashboard-content">
+
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1>Welcome back, {{ request.user.username }}</h1>
+                <p>Overview of your business performance and quick access to key sections.</p>
+            </div>
+
+            <!-- SUMMARY CARDS - Using stat-card-modern from your CSS -->
+            <div class="stats-grid" style="margin-bottom: 40px;">
+                
+                <!-- Total Orders Card -->
+                <div class="stat-card-modern">
+                    <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Orders</h3>
+                        <p class="stat-number" style="font-size: 32px; font-weight: 700; color: #0f172a; margin: 8px 0 4px 0;">{{ total_orders }}</p>
+                        <span class="stat-trend"><i class="fas fa-chart-line"></i> All time</span>
+                    </div>
+                </div>
+
+                <!-- Total Revenue Card -->
+                <div class="stat-card-modern">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Revenue</h3>
+                        <p class="stat-number" style="font-size: 32px; font-weight: 700; color: #0f172a; margin: 8px 0 4px 0;">₹{{ total_revenue }}</p>
+                        <span class="stat-trend positive" style="color: #10b981;"><i class="fas fa-arrow-up"></i> +12%</span>
+                    </div>
+                </div>
+
+                <!-- Pending Amount Card -->
+                <div class="stat-card-modern">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Pending Amount</h3>
+                        <p class="stat-number" style="font-size: 32px; font-weight: 700; color: #0f172a; margin: 8px 0 4px 0;">₹{{ total_pending }}</p>
+                        <span class="stat-trend"><i class="fas fa-exclamation-circle"></i> Awaiting</span>
+                    </div>
+                </div>
+
+                <!-- Total Stock Card -->
+                <div class="stat-card-modern">
+                    <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Stock</h3>
+                        <p class="stat-number" style="font-size: 32px; font-weight: 700; color: #0f172a; margin: 8px 0 4px 0;">{{ total_stock }}</p>
+                        <span class="stat-trend"><i class="fas fa-cubes"></i> Units</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- QUICK NAVIGATION CARDS -->
+            <div class="section-title">
+                <h3>Quick Navigation</h3>
+            </div>
+
+            <div class="quick-stats" style="margin-bottom: 40px;">
+
+                <!-- Orders Card -->
+                <a href="{% url 'order_list' %}" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <div class="card-icon" style="background: #dbeafe; color: #2563eb;">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div>
+                            <h3>View Orders</h3>
+                            <p>Manage and track all orders</p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Stock Card -->
+                <a href="/stock/" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <div class="card-icon" style="background: #dcfce7; color: #10b981;">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div>
+                            <h3>View Stock</h3>
+                            <p>Check inventory levels</p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Customers Card -->
+                <a href="{% url 'customer_list' %}" style="text-decoration:none;">
+                    <div class="stat-card">
+                        <div class="card-icon" style="background: #f3e8ff; color: #8b5cf6;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <h3>View Customers</h3>
+                            <p>Customer directory and details</p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- RECENT ORDERS TABLE -->
+            <div class="recent-orders-section">
+                <div class="section-header">
+                    <h3>Recent Orders</h3>
+                    <a href="{% url 'order_list' %}" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td><span class="order-id">#{{ order.ord_id }}</span></td>
+                                <td>{{ order.cust_name }}</td>
+                                <td>
+                                    <span class="status-badge 
+                                        {% if order.status == 'Pending' %}style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; padding: 6px 16px; border-radius: 30px; font-weight: 600; font-size: 13px; display: inline-block;"
+                                        {% elif order.status == 'Processing' %}style="background: rgba(37, 99, 235, 0.1); color: #2563eb; padding: 6px 16px; border-radius: 30px; font-weight: 600; font-size: 13px; display: inline-block;"
+                                        {% elif order.status == 'Completed' or order.status == 'Delivered' %}style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 6px 16px; border-radius: 30px; font-weight: 600; font-size: 13px; display: inline-block;"
+                                        {% elif order.status == 'Cancelled' %}style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 6px 16px; border-radius: 30px; font-weight: 600; font-size: 13px; display: inline-block;"
+                                        {% else %}style="background: rgba(100, 116, 139, 0.1); color: #475569; padding: 6px 16px; border-radius: 30px; font-weight: 600; font-size: 13px; display: inline-block;"{% endif %}">
+                                        {{ order.status }}
+                                    </span>
+                                </td>
+                                <td>{{ order.total_quantity }}</td>
+                                <td>
+                                    <a href="{% url 'order_details' order.ord_id %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: #eef2ff; color: #2563eb; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 13px;">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
+                                    <i class="fas fa-shopping-cart" style="font-size: 48px; color: #cbd5e1; margin-bottom: 15px;"></i>
+                                    <br>No recent orders found
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TOP CUSTOMERS TABLE -->
+            <div class="recent-orders-section" style="margin-top: 30px;">
+                <div class="section-header">
+                    <h3>Top Customers</h3>
+                    <a href="{% url 'customer_list' %}" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Total Quantity</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in top_customers %}
+                            <tr>
+                                <td>
+                                    <i class="fas fa-user" style="margin-right: 8px; color: #2563eb;"></i>
+                                    {{ customer.customer_name }}
+                                </td>
+                                <td style="font-weight: 700; color: #2563eb;">{{ customer.cus_quantity }}</td>
+                                <td>
+                                    <a href="{% url 'customer_details' customer.customer_id %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: #eef2ff; color: #2563eb; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 13px;">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" style="text-align: center; padding: 40px; color: #64748b;">
+                                    <i class="fas fa-users" style="font-size: 48px; color: #cbd5e1; margin-bottom: 15px;"></i>
+                                    <br>No customers found
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>© 2026 Factory Inventory System | Managing Director</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Help</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
