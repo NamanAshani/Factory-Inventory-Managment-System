@@ -56,6 +56,13 @@
             </div>
             <div class="header-right">
                 <span class="date"><i class="fas fa-calendar-alt"></i> {{ now|date:"l, F j, Y" }}</span>
+
+                <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+              {% csrf_token %}
+             <button type="submit" class="logout-btn">
+                Logout
+             </button>
+            </form>
             </div>
         </div>
 

@@ -23,7 +23,9 @@ from account.models import Invoice
 
 
 
-
+def logout_view(request):
+    logout(request)
+    return redirect("login")
 
 # login view function
 def login_view(request):
