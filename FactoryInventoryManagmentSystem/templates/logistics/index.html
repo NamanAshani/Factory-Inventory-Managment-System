@@ -1,0 +1,272 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Inventory Management System - Logistics Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/stockstyle.css' %}">
+   
+    <script>
+        function toggleProfileMenu() {
+            const menu = document.getElementById("profileMenu");
+            menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+        }
+
+        window.addEventListener("click", function(e) {
+            if (!e.target.closest(".profile-wrapper")) {
+                document.getElementById("profileMenu").style.display = "none";
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-industry"></i>
+            <span>Factory Inventory Management System</span>
+        </div>
+        
+        <div class="profile-wrapper">
+            <div class="profile-btn" onclick="toggleProfileMenu()">
+                <i class="fas fa-user-circle avatar-icon"></i>
+                <div class="profile-text">
+                    <span class="username">{{ request.user.username }}</span>
+                    <span class="role">Purchase Head</span>
+                </div>
+                <i class="fas fa-chevron-down arrow"></i>
+            </div>
+
+            <div class="profile-menu" id="profileMenu">
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <form method="GET" action="{% url 'logistics_view' %}">
+        <div class="filter-panel">
+            <div class="filter-header">
+                <h2><i class="fas fa-sliders-h"></i> Logistics Filters</h2>
+                <span class="filter-badge">
+                    <i class="fas fa-filter"></i> {{ active_dimensions }} active dimensions
+                </span>
+            </div>
+
+            <div class="filter-row">
+                <div class="filter-group" style="min-width: 180px;">
+                    <label><i class="fas fa-tag"></i> Product Name</label>
+                    <select class="filter-select" name="product_name">
+                        <option value="">All products</option>
+                        {% for product in products %}
+                        <option value="{{ product.pro_name }}" {% if current_product == product.pro_name %}selected{% endif %}>{{ product.pro_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label><i class="fas fa-truck"></i> Vehicle Number</label>
+                    <select class="filter-select" name="vehicle_number">
+                        <option value="">All vehicles</option>
+                        {% for vehicle in vehicles %}
+                        {% if vehicle %}
+                        <option value="{{ vehicle }}" {% if current_vehicle == vehicle %}selected{% endif %}>{{ vehicle }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label><i class="fas fa-user"></i> Driver Name</label>
+                    <select class="filter-select" name="driver_name">
+                        <option value="">All drivers</option>
+                        {% for driver in drivers %}
+                        {% if driver %}
+                        <option value="{{ driver }}" {% if current_driver == driver %}selected{% endif %}>{{ driver }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-row" style="margin-top: 20px;">
+                <div class="filter-group">
+                    <label><i class="fas fa-truck-fast"></i> Delivery Type</label>
+                    <select class="filter-select" name="delivery_type">
+                        <option value="">All types</option>
+                        <option value="full" {% if current_delivery_type == 'full' %}selected{% endif %}>FULL</option>
+                        <option value="partial" {% if current_delivery_type == 'partial' %}selected{% endif %}>PARTIAL</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label><i class="fas fa-circle-check"></i> Delivery Status</label>
+                    <select class="filter-select" name="status">
+                        <option value="">All status</option>
+                        <option value="in-transit" {% if current_status == 'in-transit' %}selected{% endif %}>In-Transit</option>
+                        <option value="delivered" {% if current_status == 'delivered' %}selected{% endif %}>Delivered</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label><i class="fas fa-file-invoice"></i> Invoice Number</label>
+                    <select class="filter-select" name="invoice_number">
+                        <option value="">All invoices</option>
+                        {% for invoice in invoices %}
+                        {% if invoice %}
+                        <option value="{{ invoice }}" {% if current_invoice == invoice %}selected{% endif %}>{{ invoice }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-row" style="margin-top: 20px;">
+                <div class="filter-group">
+                    <label>📋 PRE / STD / ECO / COM</label>
+                    <select class="filter-select" name="type">
+                        <option value="">All types</option>
+                        <option value="pre" {% if type_selected == "pre" %}selected{% endif %}>PRE (Premium)</option>
+                        <option value="std" {% if type_selected == "std" %}selected{% endif %}>STD (Standard)</option>
+                        <option value="eco" {% if type_selected == "eco" %}selected{% endif %}>ECO (Economic)</option>
+                        <option value="com" {% if type_selected == "com" %}selected{% endif %}>COM (Commercial)</option>
+                        <option value="total" {% if type_selected == "total" %}selected{% endif %}>Total Quantity</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label> Range</label>
+                    <input placeholder="Min" type="number" name="min_range"  value="{{ min_range_selected }}">
+
+                    <input placeholder="Max" type="number" name="max_range"   value="{{ max_range_selected }}">
+                </div>
+            </div>
+
+            <div class="filter-row" style="margin-top: 10px;">
+                
+
+                <div class="filter-actions">
+                    <a href="{% url 'logistics_view' %}" class="btn">
+                        <i class="fas fa-rotate-right"></i> Reset
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-magnifying-glass"></i> Apply filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div id="orders-section" class="tab-content">
+        <div class="section-header">
+            <h2 class="section-title">Manage Dispatch</h2>
+            <button class="btn btn-primary" id="createDispatchBtn" onclick="window.location.href='{% url 'add_dispatch' %}'">
+                <i class="fas fa-plus"></i> Create New Dispatch
+            </button>
+        </div>
+        
+        <div class="order-table-container">
+            <div class="table-header">
+                <div class="table-title">Recent Dispatches</div>
+                <div class="table-controls">
+                    <select class="form-control" id="statusFilter" style="width: 150px;">
+                        <option value="all">All Status</option>
+                        <option value="in-transit">In-Transit</option>
+                        <option value="delivered">Delivered</option>
+                    </select>
+                </div>
+            </div>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Order No</th>
+                        <th>Product Name</th>
+                        <th>Vehicle No.</th>
+                        <th>Driver Name</th>
+                        <th>Invoice No.</th>
+                        <th>Delivery Type</th>             
+                        <th>PRE</th>
+                        <th>STD</th>
+                        <th>ECO</th>
+                        <th>COM</th>
+                        <th>Total</th>
+                         <th>Delivery Status</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    {% for item in dispatch_items %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{item.dispatch_id.order.ord_id}}</td>
+                        <td>{{ item.product_id.pro_name }}</td>
+                        <td>{{ item.dispatch_id.vehicle_number }}</td>
+                        <td>{{ item.dispatch_id.driver_name }}</td>
+                        <td>{{ item.dispatch_id.invoice_number }}</td>
+                        <td>
+                            {% if item.dispatch_id.delivery_type == 'full' %}
+                            <span style="color: #2ecc71;">FULL</span>
+                            {% else %}
+                            <span style="color: #f39c12;">PARTIAL</span>
+                            {% endif %}
+                        </td>
+                           
+                        <td>{{ item.pre_quantity }}</td>
+                        <td>{{ item.std_quantity }}</td>
+                        <td>{{ item.eco_quantity }}</td>
+                        <td>{{ item.com_quantity }}</td>
+                        <td><strong>{{ item.total_quantity }}</strong></td>
+                        <td>
+                            {% if item.dispatch_id.status == 'delivered' %}
+                            <span style="color: #27ae60;">Delivered</span>
+                            {% else %}
+                            <span style="color: #3498db;">In-Transit</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.weight }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="13" style="text-align: center; padding: 30px;">No dispatch items found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>    
+        </div>
+    </div>
+    
+    <div id="customers-section" class="tab-content" style="display: none;">
+        <!-- Keep existing customer section if needed -->
+    </div>
+    
+    <div id="design-view-section" class="tab-content" style="display: none;">
+        <!-- Keep existing design view section if needed -->
+    </div>
+    
+    <!-- Footer Stats -->
+    <div style="display: flex; justify-content: space-between; padding: 15px 30px; color: #666; border-top: 1px solid #e0e0e0; margin-top: 20px;">
+        <div>
+            <i class="fas fa-user"></i> account
+        </div>
+        <div>
+            <span style="margin-right: 15px;">Dispatch Head</span>
+            <span class="filter-badge" style="background-color: #e0e0e0; color: #333;">
+                <i class="fas fa-filter"></i> {{ active_dimensions }} active dimensions
+            </span>
+        </div>
+    </div>
+    
+    <!-- Dispatch Modal (keep structure similar to order modal if needed) -->
+    
+    
+</body>
+</html>

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factory Inventory Management System - Order Management</title>
+    <title>Factory Inventory Management System - Stock Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/stockstyle.css' %}">
    
@@ -28,6 +28,7 @@
         <i class="fas fa-industry"></i>
         <span>Factory Inventory Management System</span>
     </div>
+   
 
     <div class="profile-wrapper">
         <div class="profile-btn" onclick="toggleProfileMenu()">
@@ -40,9 +41,7 @@
         </div>
 
         <div class="profile-menu" id="profileMenu">
-            <a href="#">My Profile</a>
-            <a href="#">Settings</a>
-            <div class="divider"></div>
+            
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="logout-link">
@@ -60,7 +59,7 @@
         <div class="filter-header">
             <h2><i class="fas fa-sliders-h"></i> Stock filters</h2>
             <span class="filter-badge">
-                <i class="fas fa-filter"></i> 6+ active dimensions
+                <i class="fas fa-filter"></i> {{ stocks.count }} active dimensions
             </span>
         </div>
 
@@ -370,6 +369,27 @@
                     <input type="hidden" id="orderId">
                 </form>
             </div>
+        </div>
+    </div>
+
+    <div id="customers-section" class="tab-content" style="display: none;">
+        <!-- Keep existing customer section if needed -->
+    </div>
+    
+    <div id="design-view-section" class="tab-content" style="display: none;">
+        <!-- Keep existing design view section if needed -->
+    </div>
+    
+    <!-- Footer Stats -->
+    <div style="display: flex; justify-content: space-between; padding: 15px 30px; color: #666; border-top: 1px solid #e0e0e0; margin-top: 20px;">
+        <div>
+            <i class="fas fa-user"></i> account
+        </div>
+        <div>
+            <span style="margin-right: 15px;">Purchase Head</span>
+            <span class="filter-badge" style="background-color: #e0e0e0; color: #333;">
+                <i class="fas fa-filter"></i> {{ stocks.count }} active dimensions
+            </span>
         </div>
     </div>
     

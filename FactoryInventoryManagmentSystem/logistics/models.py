@@ -20,6 +20,7 @@ class Dispatch(models.Model):
         ('delivered', 'Delivered'),
         
     ], default='in-transit')
+    
     invoice_number=models.CharField(max_length=500)
 
     def __str__(self):
@@ -30,9 +31,12 @@ class DispatchItem(models.Model):
     id = models.AutoField(primary_key=True)
     dispatch_id=models.ForeignKey(Dispatch,on_delete=models.CASCADE,null=True)
     product_id=models.ForeignKey(Product,on_delete=models.CASCADE,null=True)
-    product_type=models.CharField(max_length=9)
-    quantity=models.IntegerField()
+    pre_quantity = models.IntegerField(default=0) 
+    std_quantity = models.IntegerField(default=0)
+    com_quantity = models.IntegerField(default=0)
+    eco_quantity = models.IntegerField(default=0)
+    total_quantity = models.IntegerField(default=0)
     weight=models.FloatField()
 
     def __str__(self):
-         return f"{self.product_id.pro_name}-{self.quantity}pcs(Dispatch #{self.dispatch_id})"
+         return f"{self.product_id.pro_name}-{self.total_quantity}pcs(Dispatch #{self.dispatch_id})"
