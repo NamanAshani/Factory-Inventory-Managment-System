@@ -6,6 +6,7 @@ from order.models import Order
 from django.contrib.auth.decorators import login_required
 from .forms import DispatchForm, DispatchItemForm
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 
 @login_required(login_url="login")
 def logistics_view(request):
@@ -157,58 +158,51 @@ def logistics_view(request):
     return render(request, "logistics/index.html", context)
 
 
+
+
 @login_required(login_url="login")
 def add_dispatch(request):
 
     if request.method == "POST":
-        post_data = request.POST.copy()
 
-        order_id = post_data.get("order")
-        order = Order.objects.get(ord_id=order_id)
+        dispatch_form = DispatchForm(request.POST)
+        item_form = DispatchItemForm(request.POST)
 
-    # 🔥 Inject product_id into POST before form validation
-        post_data["product_id"] = order.product.pro_id
+        if dispatch_form.is_valid() and item_form.is_valid():
 
-        dispatch_form = DispatchForm(post_data)
-        item_form = DispatchItemForm(post_data)
+            order = dispatch_form.cleaned_data["order"]
 
-        if dispatch_form.is_valid() and item_form.is_valid()    :
+            dispatch = dispatch_form.save()
 
-           dispatch = dispatch_form.save()
+            dispatch_item = item_form.save(commit=False)
 
-           order_id = request.POST.get("order")
-           order = Order.objects.get(ord_id=order_id)
+            dispatch_item.dispatch_id = dispatch
+            dispatch_item.product_id = order.product
 
-    # 🔥 Don't validate item_form first
-           dispatch_item = item_form.save(commit=False)
+            dispatch_item.pre_quantity = min(dispatch_item.pre_quantity, order.pre_quantity)
+            dispatch_item.std_quantity = min(dispatch_item.std_quantity, order.std_quantity)
+            dispatch_item.com_quantity = min(dispatch_item.com_quantity, order.com_quantity)
+            dispatch_item.eco_quantity = min(dispatch_item.eco_quantity, order.eco_quantity)
 
-           dispatch_item.dispatch_id = dispatch
-           dispatch_item.product_id = order.product  # force set
+            dispatch_item.total_quantity = (
+                dispatch_item.pre_quantity +
+                dispatch_item.std_quantity +
+                dispatch_item.com_quantity +
+                dispatch_item.eco_quantity
+            )
 
-           dispatch_item.pre_quantity = min(int(request.POST.get("pre_quantity", 0)), order.pre_quantity)
-           dispatch_item.std_quantity = min(int(request.POST.get("std_quantity", 0)), order.std_quantity)
-           dispatch_item.com_quantity = min(int(request.POST.get("com_quantity", 0)), order.com_quantity)
-           dispatch_item.eco_quantity = min(int(request.POST.get("eco_quantity", 0)), order.eco_quantity)
+            if dispatch_item.total_quantity >= order.total_quantity:
+                dispatch.delivery_type = "full"
+            else:
+                dispatch.delivery_type = "partial"
 
-           dispatch_item.total_quantity = (
-           dispatch_item.pre_quantity +
-           dispatch_item.std_quantity +
-           dispatch_item.com_quantity +
-           dispatch_item.eco_quantity
-        )
+            dispatch.save()
 
-           if dispatch_item.total_quantity >= order.total_quantity:
-               dispatch.delivery_type = "full"
-           else:
-               dispatch.delivery_type = "partial"
+            dispatch_item.weight = dispatch.total_weight
+            dispatch_item.save()
 
-           dispatch.save()
-
-           dispatch_item.weight = dispatch.total_weight
-           dispatch_item.save()
-
-           messages.success(request, "Dispatch created successfully!")
-           return redirect("logistics_view")       
+            messages.success(request, "Dispatch created successfully!")
+            return redirect("logistics_view")
 
         else:
             print("Dispatch Errors:", dispatch_form.errors)
@@ -223,7 +217,6 @@ def add_dispatch(request):
         "item_form": item_form,
         "orders": Order.objects.all().order_by('-ord_id'),
     })
-
 
 
 
@@ -247,16 +240,28 @@ def update_dispatch_status(request, dispatch_id):
 
 
 
-
 @login_required(login_url="login")
 def print_invoice(request, dispatch_id):
 
     dispatch = Dispatch.objects.get(id=dispatch_id)
-    dispatch_items = DispatchItem.objects.filter(dispatch_id=dispatch)
+    items = DispatchItem.objects.filter(dispatch_id=dispatch)
+
+    subtotal = 0
+
+    for item in items:
+        subtotal += item.total_quantity
+
+    cgst = subtotal * 0.09
+    sgst = subtotal * 0.09
+    grand_total = subtotal + cgst + sgst
 
     context = {
         "dispatch": dispatch,
-        "items": dispatch_items,
+        "items": items,
+        "subtotal": subtotal,
+        "cgst": cgst,
+        "sgst": sgst,
+        "grand_total": grand_total,
     }
 
     return render(request, "logistics/print_invoice.html", context)

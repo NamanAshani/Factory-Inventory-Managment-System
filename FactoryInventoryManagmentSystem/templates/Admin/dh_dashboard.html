@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dispatch Dashboard</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6fa;
+padding:30px;
+}
+
+.cards{
+display:flex;
+gap:20px;
+margin-bottom:30px;
+}
+
+.card{
+flex:1;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+text-align:center;
+}
+
+.card h2{
+margin:10px 0;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+table,th,td{
+border:1px solid #ddd;
+}
+
+th,td{
+padding:10px;
+text-align:center;
+}
+
+button{
+padding:6px 12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:4px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Dispatch Head Dashboard</h1>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Orders</h3>
+<h2>{{total_orders}}</h2>
+</div>
+
+<div class="card">
+<h3>Orders Ready</h3>
+<h2>{{pending_orders|length}}</h2>
+</div>
+
+<div class="card">
+<h3>In Transit</h3>
+<h2>{{in_transit}}</h2>
+</div>
+
+<div class="card">
+<h3>Delivered</h3>
+<h2>{{delivered}}</h2>
+</div>
+
+</div>
+
+
+<h2>Orders Ready For Dispatch</h2>
+
+<table>
+
+<tr>
+<th>Order ID</th>
+<th>Customer</th>
+<th>Product</th>
+<th>Qty</th>
+<th>Create Dispatch</th>
+</tr>
+
+{% for o in pending_orders %}
+
+<tr>
+
+<td>{{o.ord_id}}</td>
+<td>{{o.cust_name}}</td>
+<td>{{o.product}}</td>
+<td>{{o.total_quantity}}</td>
+
+<td>
+
+<a href="/logistics/add-dispatch/?order={{o.ord_id}}">
+<button>Create Dispatch</button>
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+
+<br><br>
+
+<h2>Recent Dispatch</h2>
+
+<table>
+
+<tr>
+<th>Invoice</th>
+<th>Order</th>
+<th>Vehicle</th>
+<th>Driver</th>
+<th>Status</th>
+<th>Print</th>
+</tr>
+
+{% for d in recent_dispatch %}
+
+<tr>
+
+<td>{{d.invoice_number}}</td>
+<td>{{d.order.ord_id}}</td>
+<td>{{d.vehicle_number}}</td>
+<td>{{d.driver_name}}</td>
+<td>{{d.status}}</td>
+
+<td>
+
+<a href="/logistics/print-invoice/{{d.id}}/">
+<button>Print</button>
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>

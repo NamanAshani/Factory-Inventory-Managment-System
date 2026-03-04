@@ -19,6 +19,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
 from stock.models import Stock
+from logistics.models import Dispatch,DispatchItem
 from account.models import Invoice
 
 
@@ -96,7 +97,26 @@ def ah_dashboard(request):
 
 @login_required(login_url="login")
 def dh_dashboard(request):
-    return render(request, "Admin/dh_dashboard.html")
+
+    total_orders = Order.objects.count()
+
+    pending_orders = Order.objects.filter(status='pending')
+
+    in_transit = Dispatch.objects.filter(status='in-transit').count()
+
+    delivered = Dispatch.objects.filter(status='delivered').count()
+
+    recent_dispatch = Dispatch.objects.select_related('order').order_by('-dispatch_date')[:10]
+
+    context = {
+        "total_orders": total_orders,
+        "pending_orders": pending_orders,
+        "in_transit": in_transit,
+        "delivered": delivered,
+        "recent_dispatch": recent_dispatch,
+    }
+
+    return render(request, "Admin/dh_dashboard.html", context)
 
 @login_required(login_url="login")
 def mar_h_dashboard(request):

@@ -21,11 +21,23 @@ class Dispatch(models.Model):
         
     ], default='in-transit')
     
-    invoice_number=models.CharField(max_length=500)
+    invoice_number = models.PositiveIntegerField(unique=True, null=True, blank=True)
+    remark = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"Dispatch #{self.id} - Order #{self.order.ord_id} - {self.vehicle_number}"
 
+    def save(self, *args, **kwargs):
+
+        if not self.invoice_number:
+            last_invoice = Dispatch.objects.order_by('-invoice_number').first()
+
+            if last_invoice and last_invoice.invoice_number:
+                self.invoice_number = last_invoice.invoice_number + 1
+            else:
+                self.invoice_number = 1
+
+        super().save(*args, **kwargs)
 
 class DispatchItem(models.Model):
     id = models.AutoField(primary_key=True)
@@ -47,7 +59,6 @@ class DispatchItem(models.Model):
             self.com_quantity +
             self.eco_quantity
         )
-
         super().save(*args, **kwargs)
 
     def __str__(self):
