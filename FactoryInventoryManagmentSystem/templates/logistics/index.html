@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +6,764 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factory Inventory Management System - Logistics Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/stockstyle.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* COPY EXACT STYLES FROM ORDER/STOCK VIEWS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0b1120 0%, #1a2639 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 30px;
+            position: relative;
+        }
+        
+        /* Decorative background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 32px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Header - Enhanced with gradient */
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            padding: 25px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1));
+            transform: skewX(-20deg) translateX(100px);
+            pointer-events: none;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo i {
+            font-size: 32px;
+            color: white;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 12px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo span {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .profile-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .avatar-icon {
+            font-size: 32px;
+            color: white;
+        }
+        
+        .profile-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .username {
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+        }
+        
+        .role {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .arrow {
+            color: white;
+            font-size: 14px;
+        }
+        
+        .profile-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            min-width: 180px;
+            overflow: hidden;
+            z-index: 100;
+        }
+        
+        .profile-menu form {
+            margin: 0;
+        }
+        
+        .logout-link {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            background: white;
+            color: #ef4444;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .logout-link:hover {
+            background: #fef2f2;
+        }
+        
+        /* Main Content */
+        .list-content {
+            padding: 35px;
+            position: relative;
+        }
+        
+        .list-content::before {
+            content: '\f0d1\f0d1\f0d1';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 120px;
+            color: rgba(37, 99, 235, 0.03);
+            pointer-events: none;
+            transform: rotate(-15deg);
+            z-index: 0;
+        }
+        
+        /* Filter Panel - Enhanced */
+        .filter-panel {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            margin: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        
+        .filter-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0b1120;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .filter-header h2 i {
+            font-size: 22px;
+            color: #2563eb;
+            background: #eef2ff;
+            padding: 10px;
+            border-radius: 12px;
+        }
+        
+        .filter-badge {
+            background: #eef2ff;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5565;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-group label i {
+            margin-right: 8px;
+            color: #2563eb;
+        }
+        
+        .filter-select, .filter-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #f1f5f9;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #1f2937;
+            background: white;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .filter-select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        
+        .filter-group input {
+            width: calc(50% - 5px);
+            display: inline-block;
+        }
+        
+        .filter-group input:first-of-type {
+            margin-right: 8px;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 15px;
+            margin-left: auto;
+        }
+        
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 35px 25px 35px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0b1120;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .section-title:before {
+            content: '\f0d1';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #2563eb;
+            background: #eef2ff;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 20px;
+        }
+        
+        #createDispatchBtn {
+            padding: 14px 32px;
+            font-size: 15px;
+        }
+        
+        /* Table Container */
+        .order-table-container {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            margin: 0 35px 30px 35px;
+            position: relative;
+            z-index: 1;
+            overflow-x: auto;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            background: #f8fafc;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        
+        .table-title {
+            font-weight: 700;
+            color: #0b1120;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .table-title i {
+            color: #2563eb;
+            font-size: 20px;
+        }
+        
+        .table-title:before {
+            content: '\f0d1';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #2563eb;
+            background: #eef2ff;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+        
+        .table-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-control {
+            padding: 10px 18px;
+            border: 2px solid #f1f5f9;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        /* Table - Enhanced */
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            padding: 0 15px 15px 15px;
+            min-width: 1800px; /* Ensures all columns visible */
+        }
+        
+        .table thead tr {
+            background: transparent;
+        }
+        
+        .table th {
+            padding: 18px 15px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            white-space: nowrap;
+            background: #f8fafc;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        /* Add icons to headers */
+        .table th:nth-child(1):before { content: '\f2bb'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #2563eb; background: #eef2ff; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(2):before { content: '\f07a'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #f59e0b; background: #fef3c7; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(3):before { content: '\f1b2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #10b981; background: #d1fae5; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(4):before { content: '\f0d1'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #8b5cf6; background: #f3e8ff; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(5):before { content: '\f007'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #ec4899; background: #fce7f3; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(6):before { content: '\f15c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #64748b; background: #f1f5f9; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(7):before { content: '\f0e7'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #f59e0b; background: #fef3c7; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(8):before { content: '\f005'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #3b82f6; background: #dbeafe; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(9):before { content: '\f0c0'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #10b981; background: #d1fae5; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(10):before { content: '\f06c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #8b5cf6; background: #f3e8ff; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(11):before { content: '\f201'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #ef4444; background: #fee2e2; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(12):before { content: '\f51e'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #2563eb; background: #eef2ff; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(13):before { content: '\f0e7'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #f59e0b; background: #fef3c7; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(14):before { content: '\f1c1'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #10b981; background: #d1fae5; padding: 6px; border-radius: 8px; font-size: 11px; }
+        .table th:nth-child(15):before { content: '\f15c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 8px; color: #8b5cf6; background: #f3e8ff; padding: 6px; border-radius: 8px; font-size: 11px; }
+        
+        .table td {
+            padding: 16px 15px;
+            font-size: 13px;
+            color: #0f172a;
+            font-weight: 500;
+            background: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .table tbody tr:hover td {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px -8px rgba(37, 99, 235, 0.15);
+            background: white;
+        }
+        
+        /* First column styling */
+        .table td:first-child {
+            font-weight: 700;
+            color: #2563eb;
+            background: #eef2ff;
+            border-radius: 16px 0 0 16px;
+            font-size: 14px;
+        }
+        
+        /* Quantity columns styling */
+        .table td:nth-child(8),
+        .table td:nth-child(9),
+        .table td:nth-child(10),
+        .table td:nth-child(11),
+        .table td:nth-child(12) {
+            font-weight: 700;
+            color: #2563eb;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        /* Total column special styling */
+        .table td:nth-child(12) {
+            color: #2563eb;
+            font-size: 15px;
+        }
+        
+        /* Delivery type badges */
+        .table td:nth-child(7) span {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .table td:nth-child(7) span[style*="color: #2ecc71"] {
+            background: #d1fae5;
+            color: #065f46 !important;
+        }
+        
+        .table td:nth-child(7) span[style*="color: #f39c12"] {
+            background: #fef3c7;
+            color: #92400e !important;
+        }
+        
+        /* Status select styling */
+        .table td:nth-child(13) select {
+            padding: 6px 12px;
+            border: 2px solid #f1f5f9;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .table td:nth-child(13) select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        .table td:nth-child(13) select option[value="in-transit"] {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .table td:nth-child(13) select option[value="delivered"] {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        /* Invoice link styling */
+        .table td:last-child a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 6px 12px;
+            background: #eef2ff;
+            border-radius: 30px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .table td:last-child a:hover {
+            background: #2563eb;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .table td:last-child a:before {
+            content: '\f02f';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 12px;
+        }
+        
+        /* Last column */
+        .table td:last-child {
+            border-radius: 0 16px 16px 0;
+        }
+        
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 60px !important;
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        /* Footer Stats */
+        .footer-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 35px;
+            color: #64748b;
+            border-top: 1px solid #f1f5f9;
+            background: white;
+            margin: 20px 35px 0 35px;
+            border-radius: 16px;
+            font-size: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-stats i {
+            color: #2563eb;
+            margin-right: 8px;
+        }
+        
+        .footer-badge {
+            background: #eef2ff;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: #2563eb;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Animation for table rows */
+        @keyframes slideInRow {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .table tbody tr {
+            animation: slideInRow 0.4s ease;
+            animation-fill-mode: both;
+        }
+        
+        .table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        .table tbody tr:nth-child(2) { animation-delay: 0.15s; }
+        .table tbody tr:nth-child(3) { animation-delay: 0.2s; }
+        .table tbody tr:nth-child(4) { animation-delay: 0.25s; }
+        .table tbody tr:nth-child(5) { animation-delay: 0.3s; }
+        .table tbody tr:nth-child(6) { animation-delay: 0.35s; }
+        .table tbody tr:nth-child(7) { animation-delay: 0.4s; }
+        .table tbody tr:nth-child(8) { animation-delay: 0.45s; }
+        .table tbody tr:nth-child(9) { animation-delay: 0.5s; }
+        .table tbody tr:nth-child(10) { animation-delay: 0.55s; }
+        
+        /* Horizontal scroll indicator */
+        .order-table-container::after {
+            content: '← Scroll horizontally for more columns →';
+            display: block;
+            text-align: center;
+            padding: 12px;
+            font-size: 13px;
+            color: #64748b;
+            background: #f8fafc;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .filter-panel,
+            .section-header,
+            .order-table-container,
+            .footer-stats {
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .filter-actions {
+                margin-left: 0;
+            }
+        }
+    </style>
    
     <script>
         function toggleProfileMenu() {
@@ -23,276 +779,251 @@
     </script>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <i class="fas fa-industry"></i>
-            <span>Factory Inventory Management System</span>
-        </div>
-        
-        <div class="profile-wrapper">
-            <div class="profile-btn" onclick="toggleProfileMenu()">
-                <i class="fas fa-user-circle avatar-icon"></i>
-                <div class="profile-text">
-                    <span class="username">{{ request.user.username }}</span>
-                    <span class="role">Purchase Head</span>
-                </div>
-                <i class="fas fa-chevron-down arrow"></i>
-            </div>
-
-            <div class="profile-menu" id="profileMenu">
-                <form method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-link">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <form method="GET" action="{% url 'logistics_view' %}">
-        <div class="filter-panel">
-            <div class="filter-header">
-                <h2><i class="fas fa-sliders-h"></i> Logistics Filters</h2>
-                <span class="filter-badge">
-                    <i class="fas fa-filter"></i> {{ active_dimensions }} active dimensions
-                </span>
-            </div>
-
-            <div class="filter-row">
-                <div class="filter-group" style="min-width: 180px;">
-                    <label><i class="fas fa-tag"></i> Product Name</label>
-                    <select class="filter-select" name="product_name">
-                        <option value="">All products</option>
-                        {% for product in products %}
-                        <option value="{{ product.pro_name }}" {% if current_product == product.pro_name %}selected{% endif %}>{{ product.pro_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label><i class="fas fa-truck"></i> Vehicle Number</label>
-                    <select class="filter-select" name="vehicle_number">
-                        <option value="">All vehicles</option>
-                        {% for vehicle in vehicles %}
-                        {% if vehicle %}
-                        <option value="{{ vehicle }}" {% if current_vehicle == vehicle %}selected{% endif %}>{{ vehicle }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label><i class="fas fa-user"></i> Driver Name</label>
-                    <select class="filter-select" name="driver_name">
-                        <option value="">All drivers</option>
-                        {% for driver in drivers %}
-                        {% if driver %}
-                        <option value="{{ driver }}" {% if current_driver == driver %}selected{% endif %}>{{ driver }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="filter-row" style="margin-top: 20px;">
-                <div class="filter-group">
-                    <label><i class="fas fa-truck-fast"></i> Delivery Type</label>
-                    <select class="filter-select" name="delivery_type">
-                        <option value="">All types</option>
-                        <option value="full" {% if current_delivery_type == 'full' %}selected{% endif %}>FULL</option>
-                        <option value="partial" {% if current_delivery_type == 'partial' %}selected{% endif %}>PARTIAL</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label><i class="fas fa-circle-check"></i> Delivery Status</label>
-                    <select class="filter-select" name="status">
-                        <option value="">All status</option>
-                        <option value="in-transit" {% if current_status == 'in-transit' %}selected{% endif %}>In-Transit</option>
-                        <option value="delivered" {% if current_status == 'delivered' %}selected{% endif %}>Delivered</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label><i class="fas fa-file-invoice"></i> Invoice Number</label>
-                    <select class="filter-select" name="invoice_number">
-                        <option value="">All invoices</option>
-                        {% for invoice in invoices %}
-                        {% if invoice %}
-                        <option value="{{ invoice }}" {% if current_invoice == invoice %}selected{% endif %}>{{ invoice }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="filter-row" style="margin-top: 20px;">
-                <div class="filter-group">
-                    <label>📋 PRE / STD / ECO / COM</label>
-                    <select class="filter-select" name="type">
-                        <option value="">All types</option>
-                        <option value="pre" {% if type_selected == "pre" %}selected{% endif %}>PRE (Premium)</option>
-                        <option value="std" {% if type_selected == "std" %}selected{% endif %}>STD (Standard)</option>
-                        <option value="eco" {% if type_selected == "eco" %}selected{% endif %}>ECO (Economic)</option>
-                        <option value="com" {% if type_selected == "com" %}selected{% endif %}>COM (Commercial)</option>
-                        <option value="total" {% if type_selected == "total" %}selected{% endif %}>Total Quantity</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label> Range</label>
-                    <input placeholder="Min" type="number" name="min_range"  value="{{ min_range_selected }}">
-
-                    <input placeholder="Max" type="number" name="max_range"   value="{{ max_range_selected }}">
-                </div>
-            </div>
-
-            <div class="filter-row" style="margin-top: 10px;">
-                
-
-                <div class="filter-actions">
-                    <a href="{% url 'logistics_view' %}" class="btn">
-                        <i class="fas fa-rotate-right"></i> Reset
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-magnifying-glass"></i> Apply filters
-                    </button>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <div id="orders-section" class="tab-content">
-        <div class="section-header">
-            <h2 class="section-title">Manage Dispatch</h2>
-            <button class="btn btn-primary" id="createDispatchBtn" onclick="window.location.href='{% url 'add_dispatch' %}'">
-                <i class="fas fa-plus"></i> Create New Dispatch
-            </button>
-        </div>
-        
-        <div class="order-table-container">
-            <div class="table-header">
-                <div class="table-title">Recent Dispatches</div>
-                <div class="table-controls">
-                    <select class="form-control" id="statusFilter" style="width: 150px;">
-                        <option value="all">All Status</option>
-                        <option value="in-transit">In-Transit</option>
-                        <option value="delivered">Delivered</option>
-                    </select>
-                </div>
+    <div class="container">
+        <!-- Enhanced Header matching Order/Stock views -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-industry"></i>
+                <span>Factory Inventory Management System</span>
             </div>
             
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Order No</th>
-                        <th>Product Name</th>
-                        <th>Vehicle No.</th>
-                        <th>Driver Name</th>
-                        <th>Invoice No.</th>
-                        <th>Delivery Type</th>             
-                        <th>PRE</th>
-                        <th>STD</th>
-                        <th>ECO</th>
-                        <th>COM</th>
-                        <th>Total</th>
-                         <th>Delivery Status</th>
-                        <th>Weight</th>
-                        <th>Invoice</th>
-                    </tr>
-                </thead>
-                <tbody id="ordersTableBody">
-                    {% for item in dispatch_items %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{item.dispatch_id.order.ord_id}}</td>
-                        <td>{{ item.product_id.pro_name }}</td>
-                        <td>{{ item.dispatch_id.vehicle_number }}</td>
-                        <td>{{ item.dispatch_id.driver_name }}</td>
-                        <td>{{ item.dispatch_id.invoice_number }}</td>
-                        <td>
-                            {% if item.dispatch_id.delivery_type == 'full' %}
-                            <span style="color: #2ecc71;">FULL</span>
-                            {% else %}
-                            <span style="color: #f39c12;">PARTIAL</span>
+            <div class="profile-wrapper">
+                <div class="profile-btn" onclick="toggleProfileMenu()">
+                    <i class="fas fa-user-circle avatar-icon"></i>
+                    <div class="profile-text">
+                        <span class="username">{{ request.user.username }}</span>
+                        <span class="role">Purchase Head</span>
+                    </div>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </div>
+              <br><br>
+                <div class="profile-menu" id="profileMenu">
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-link">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Panel - Enhanced -->
+        <form method="GET" action="{% url 'logistics_view' %}">
+            <div class="filter-panel">
+                <div class="filter-header">
+                    <h2><i class="fas fa-sliders-h"></i> Logistics Filters</h2>
+                    <span class="filter-badge">
+                        <i class="fas fa-filter"></i> {{ active_dimensions }} active dimensions
+                    </span>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label><i class="fas fa-tag"></i> Product Name</label>
+                        <select class="filter-select" name="product_name">
+                            <option value="">All products</option>
+                            {% for product in products %}
+                            <option value="{{ product.pro_name }}" {% if current_product == product.pro_name %}selected{% endif %}>{{ product.pro_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label><i class="fas fa-truck"></i> Vehicle Number</label>
+                        <select class="filter-select" name="vehicle_number">
+                            <option value="">All vehicles</option>
+                            {% for vehicle in vehicles %}
+                            {% if vehicle %}
+                            <option value="{{ vehicle }}" {% if current_vehicle == vehicle %}selected{% endif %}>{{ vehicle }}</option>
                             {% endif %}
-                        </td>
-                           
-                        <td>{{ item.pre_quantity }}</td>
-                        <td>{{ item.std_quantity }}</td>
-                        <td>{{ item.eco_quantity }}</td>
-                        <td>{{ item.com_quantity }}</td>
-                        <td><strong>{{ item.total_quantity }}</strong></td>
-                        <td>
-                            <form method="POST" action="{% url 'update_dispatch_status' item.dispatch_id.id %}">
-                                {% csrf_token %}
-                                <select name="status" onchange="this.form.submit()" 
-                                        style="padding:4px; border-radius:6px">
+                            {% endfor %}
+                        </select>
+                    </div>
 
-                                    <option value="in-transit"
-                                        {% if item.dispatch_id.status == 'in-transit' %}selected{% endif %} style="color: green;">
-                                        In-Transit
-                                    </option>
+                    <div class="filter-group">
+                        <label><i class="fas fa-user"></i> Driver Name</label>
+                        <select class="filter-select" name="driver_name">
+                            <option value="">All drivers</option>
+                            {% for driver in drivers %}
+                            {% if driver %}
+                            <option value="{{ driver }}" {% if current_driver == driver %}selected{% endif %}>{{ driver }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
 
-                                    <option value="delivered"
-                                        {% if item.dispatch_id.status == 'delivered' %}selected{% endif %} style="color: blue;">
-                                        Delivered
-                                    </option>
-                                   
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label><i class="fas fa-truck-fast"></i> Delivery Type</label>
+                        <select class="filter-select" name="delivery_type">
+                            <option value="">All types</option>
+                            <option value="full" {% if current_delivery_type == 'full' %}selected{% endif %}>FULL</option>
+                            <option value="partial" {% if current_delivery_type == 'partial' %}selected{% endif %}>PARTIAL</option>
+                        </select>
+                    </div>
 
-                                </select>
-                            </form>
+                    <div class="filter-group">
+                        <label><i class="fas fa-circle-check"></i> Delivery Status</label>
+                        <select class="filter-select" name="status">
+                            <option value="">All status</option>
+                            <option value="in-transit" {% if current_status == 'in-transit' %}selected{% endif %}>In-Transit</option>
+                            <option value="delivered" {% if current_status == 'delivered' %}selected{% endif %}>Delivered</option>
+                        </select>
+                    </div>
 
-                        </td>
-                        <td>{{ item.weight }}</td>
-                        <td><a href="{% url 'print_invoice' item.dispatch_id.id %}" target="_blank"> Invoice</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="13" style="text-align: center; padding: 30px;">No dispatch items found</td>
-                    </tr>
+                    <div class="filter-group">
+                        <label><i class="fas fa-file-invoice"></i> Invoice Number</label>
+                        <select class="filter-select" name="invoice_number">
+                            <option value="">All invoices</option>
+                            {% for invoice in invoices %}
+                            {% if invoice %}
+                            <option value="{{ invoice }}" {% if current_invoice == invoice %}selected{% endif %}>{{ invoice }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label><i class="fas fa-layer-group"></i> PRE / STD / ECO / COM</label>
+                        <select class="filter-select" name="type">
+                            <option value="">All types</option>
+                            <option value="pre" {% if type_selected == "pre" %}selected{% endif %}>PRE (Premium)</option>
+                            <option value="std" {% if type_selected == "std" %}selected{% endif %}>STD (Standard)</option>
+                            <option value="eco" {% if type_selected == "eco" %}selected{% endif %}>ECO (Economic)</option>
+                            <option value="com" {% if type_selected == "com" %}selected{% endif %}>COM (Commercial)</option>
+                            <option value="total" {% if type_selected == "total" %}selected{% endif %}>Total Quantity</option>
+                        </select>
+                    </div>
                     
+                    <div class="filter-group">
+                        <label><i class="fas fa-chart-line"></i> Range</label>
+                        <input placeholder="Min" type="number" name="min_range" value="{{ min_range_selected }}">
+                        <input placeholder="Max" type="number" name="max_range" value="{{ max_range_selected }}">
+                    </div>
 
-                    {% comment %} <th>Invoice</th>
+                    <div class="filter-actions">
+                        <a href="{% url 'logistics_view' %}" class="btn btn-secondary">
+                            <i class="fas fa-rotate-right"></i> Reset
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-magnifying-glass"></i> Apply filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
 
-                    <td>
-                    <a href="{% url 'print_invoice' item.dispatch_id %}" target="_blank">
-                    Print
-                    </a>
-                    </td> {% endcomment %}
-                    {% endfor %}
-                </tbody>
+        <!-- Main Content -->
+        <div id="orders-section" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">Manage Dispatch</h2>
+                <button class="btn btn-primary" id="createDispatchBtn" onclick="window.location.href='{% url 'add_dispatch' %}'">
+                    <i class="fas fa-plus"></i> Create New Dispatch
+                </button>
+            </div>
+            
+            <div class="order-table-container">
+                <div class="table-header">
+                    <div class="table-title">
+                        <i class="fas fa-truck"></i> Recent Dispatches
+                    </div>
+                    <div class="table-controls">
+                        <select class="form-control" id="statusFilter" style="width: 150px;">
+                            <option value="all">All Status</option>
+                            <option value="in-transit">In-Transit</option>
+                            <option value="delivered">Delivered</option>
+                        </select>
+                    </div>
+                </div>
                 
-            </table>    
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Order No</th>
+                            <th>Product Name</th>
+                            <th>Vehicle No.</th>
+                            <th>Driver Name</th>
+                            <th>Invoice No.</th>
+                            <th>Delivery Type</th>             
+                            <th>PRE</th>
+                            <th>STD</th>
+                            <th>ECO</th>
+                            <th>COM</th>
+                            <th>Total</th>
+                            <th>Delivery Status</th>
+                            <th>Weight</th>
+                            <th>Invoice</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        {% for item in dispatch_items %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{item.dispatch_id.order.ord_id}}</td>
+                            <td>{{ item.product_id.pro_name }}</td>
+                            <td>{{ item.dispatch_id.vehicle_number }}</td>
+                            <td>{{ item.dispatch_id.driver_name }}</td>
+                            <td>{{ item.dispatch_id.invoice_number }}</td>
+                            <td>
+                                {% if item.dispatch_id.delivery_type == 'full' %}
+                                <span style="color: #2ecc71;">FULL</span>
+                                {% else %}
+                                <span style="color: #f39c12;">PARTIAL</span>
+                                {% endif %}
+                            </td>
+                               
+                            <td>{{ item.pre_quantity }}</td>
+                            <td>{{ item.std_quantity }}</td>
+                            <td>{{ item.eco_quantity }}</td>
+                            <td>{{ item.com_quantity }}</td>
+                            <td><strong>{{ item.total_quantity }}</strong></td>
+                            <td>
+                                <form method="POST" action="{% url 'update_dispatch_status' item.dispatch_id.id %}">
+                                    {% csrf_token %}
+                                    <select name="status" onchange="this.form.submit()" 
+                                            style="padding:6px 12px; border-radius:30px; border:2px solid #f1f5f9; font-size:12px; font-weight:500; cursor:pointer;">
+                                        <option value="in-transit" {% if item.dispatch_id.status == 'in-transit' %}selected{% endif %}>
+                                            In-Transit
+                                        </option>
+                                        <option value="delivered" {% if item.dispatch_id.status == 'delivered' %}selected{% endif %}>
+                                            Delivered
+                                        </option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td>{{ item.weight }}</td>
+                            <td><a href="{% url 'print_invoice' item.dispatch_id.id %}" target="_blank">Print Invoice</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="15" class="empty-state">
+                                <i class="fas fa-truck" style="font-size: 48px; color: #cbd5e1; margin-bottom: 15px; display: block;"></i>
+                                <h3 style="font-size: 18px; color: #475569; margin-bottom: 5px;">No Dispatches Found</h3>
+                                <p style="color: #94a3b8;">There are no dispatch items matching your criteria</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>    
+            </div>
+        </div>
+        
+        <!-- Footer Stats - Enhanced -->
+        <div class="footer-stats">
+            <div>
+                <i class="fas fa-user"></i> account • Dispatch Head
+            </div>
+            <div class="footer-badge">
+                <i class="fas fa-cubes"></i> {{ active_dimensions }} active dimensions
+            </div>
         </div>
     </div>
     
-    <div id="customers-section" class="tab-content" style="display: none;">
-        <!-- Keep existing customer section if needed -->
-    </div>
-    
-    <div id="design-view-section" class="tab-content" style="display: none;">
-        <!-- Keep existing design view section if needed -->
-    </div>
-
-    
-    <!-- Footer Stats -->
-    <div style="display: flex; justify-content: space-between; padding: 15px 30px; color: #666; border-top: 1px solid #e0e0e0; margin-top: 20px;">
-        <div>
-            <i class="fas fa-user"></i> account
-        </div>
-        <div>
-            <span style="margin-right: 15px;">Dispatch Head</span>
-            <span class="filter-badge" style="background-color: #e0e0e0; color: #333;">
-                <i class="fas fa-filter"></i> {{ active_dimensions }} active dimensions
-            </span>
-        </div>
-    </div>
-    
-    <!-- Dispatch Modal (keep structure similar to order modal if needed) -->
-    
-    
+    <!-- Keep any existing modals if needed -->
 </body>
 </html>
