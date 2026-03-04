@@ -1,10 +1,11 @@
-from pyexpat.errors import messages
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from .models import Dispatch, DispatchItem
 from stock.models import Product
 from order.models import Order
 from django.contrib.auth.decorators import login_required
-from .forms import DispatchForm, DispatchItemForm, DispatchCreateForm
+from .forms import DispatchForm, DispatchItemForm
+from django.shortcuts import get_object_or_404
 
 @login_required(login_url="login")
 def logistics_view(request):
@@ -154,80 +155,108 @@ def logistics_view(request):
     }
 
     return render(request, "logistics/index.html", context)
+
+
 @login_required(login_url="login")
 def add_dispatch(request):
-    orders = Order.objects.all().order_by('-ord_id')
-    context = {
-        "orders": orders
-    }
-    return render(request, "logistics/add_dispatch.html", context)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+
+        order_id = post_data.get("order")
+        order = Order.objects.get(ord_id=order_id)
+
+    # 🔥 Inject product_id into POST before form validation
+        post_data["product_id"] = order.product.pro_id
+
+        dispatch_form = DispatchForm(post_data)
+        item_form = DispatchItemForm(post_data)
+
+        if dispatch_form.is_valid() and item_form.is_valid()    :
+
+           dispatch = dispatch_form.save()
+
+           order_id = request.POST.get("order")
+           order = Order.objects.get(ord_id=order_id)
+
+    # 🔥 Don't validate item_form first
+           dispatch_item = item_form.save(commit=False)
+
+           dispatch_item.dispatch_id = dispatch
+           dispatch_item.product_id = order.product  # force set
+
+           dispatch_item.pre_quantity = min(int(request.POST.get("pre_quantity", 0)), order.pre_quantity)
+           dispatch_item.std_quantity = min(int(request.POST.get("std_quantity", 0)), order.std_quantity)
+           dispatch_item.com_quantity = min(int(request.POST.get("com_quantity", 0)), order.com_quantity)
+           dispatch_item.eco_quantity = min(int(request.POST.get("eco_quantity", 0)), order.eco_quantity)
+
+           dispatch_item.total_quantity = (
+           dispatch_item.pre_quantity +
+           dispatch_item.std_quantity +
+           dispatch_item.com_quantity +
+           dispatch_item.eco_quantity
+        )
+
+           if dispatch_item.total_quantity >= order.total_quantity:
+               dispatch.delivery_type = "full"
+           else:
+               dispatch.delivery_type = "partial"
+
+           dispatch.save()
+
+           dispatch_item.weight = dispatch.total_weight
+           dispatch_item.save()
+
+           messages.success(request, "Dispatch created successfully!")
+           return redirect("logistics_view")       
+
+        else:
+            print("Dispatch Errors:", dispatch_form.errors)
+            print("Item Errors:", item_form.errors)
+
+    else:
+        dispatch_form = DispatchForm()
+        item_form = DispatchItemForm()
+
+    return render(request, "logistics/add_dispatch.html", {
+        "dispatch_form": dispatch_form,
+        "item_form": item_form,
+        "orders": Order.objects.all().order_by('-ord_id'),
+    })
+
+
 
 
 @login_required(login_url="login")
-def create_dispatch(request):
+def update_dispatch_status(request, dispatch_id):
+
     if request.method == "POST":
-        # Get form data
-        order_id = request.POST.get('order_id')
-        vehicle_number = request.POST.get('vehicle_number')
-        driver_name = request.POST.get('driver_name')
-        total_weight = request.POST.get('total_weight')
-        delivery_type = request.POST.get('delivery_type')
-        status = request.POST.get('status')
-        invoice_number = request.POST.get('invoice_number')
-        
         try:
-            # Get the order
-            order = Order.objects.get(ord_id=order_id)
-            
-            # Create dispatch
-            dispatch = Dispatch.objects.create(
-                order=order,
-                vehicle_number=vehicle_number,
-                driver_name=driver_name,
-                total_weight=total_weight,
-                delivery_type=delivery_type,
-                status=status,
-                invoice_number=invoice_number
-            )
-            
-            # messages.success(request, 'Dispatch created successfully!')
-            return redirect('logistics_view')
-            
-        except Order.DoesNotExist:
-            messages.error(request, 'Selected order does not exist.')
-            return redirect('add_dispatch')
-        except Exception as e:
-            messages.error(request, f'Error creating dispatch: {str(e)}')
-            return redirect('add_dispatch')
-    
-    return redirect('logistics_view')
-# @login_required(login_url="login")
-# def create_dispatch(request):
-#     if request.method == "POST":
-#         # Get form data
-#         order_id = request.POST.get('order_id')
-#         vehicle_number = request.POST.get('vehicle_number')
-#         driver_name = request.POST.get('driver_name')
-#         total_weight = request.POST.get('total_weight')
-#         delivery_type = request.POST.get('delivery_type')
-#         status = request.POST.get('status')
-#         invoice_number = request.POST.get('invoice_number')
-        
-#         # Create dispatch
-#         order = Order.objects.get(ord_id=order_id)
-#         dispatch = Dispatch.objects.create(
-#             order=order,
-#             vehicle_number=vehicle_number,
-#             driver_name=driver_name,
-#             total_weight=total_weight,
-#             delivery_type=delivery_type,
-#             status=status,
-#             invoice_number=invoice_number
-#         )
-        
-#         # Here you would typically create DispatchItems based on the order
-#         # This is just a placeholder - you'll need to implement based on your business logic
-        
-#         return redirect('logistics_view')
-    
-#     return redirect('logistics_view')
+            dispatch = Dispatch.objects.get(id=dispatch_id)
+
+            new_status = request.POST.get("status")
+
+            if new_status in ["in-transit", "delivered"]:
+                dispatch.status = new_status
+                dispatch.save()
+
+        except Dispatch.DoesNotExist:
+            pass
+
+    return redirect("logistics_view")
+
+
+
+
+@login_required(login_url="login")
+def print_invoice(request, dispatch_id):
+
+    dispatch = Dispatch.objects.get(id=dispatch_id)
+    dispatch_items = DispatchItem.objects.filter(dispatch_id=dispatch)
+
+    context = {
+        "dispatch": dispatch,
+        "items": dispatch_items,
+    }
+
+    return render(request, "logistics/print_invoice.html", context)

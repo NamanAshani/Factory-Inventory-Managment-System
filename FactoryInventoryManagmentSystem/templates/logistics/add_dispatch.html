@@ -245,16 +245,62 @@
     <div class="container">
         <h2>Add Dispatch</h2>
 
-        <form method="POST" action="{% url 'create_dispatch' %}">
+        <form method="POST">
             {% csrf_token %}
             <div class="form-group">
                 <label for="order">Select Order</label>
-                <select name="order_id" required>
+               <select name="order" id="orderSelect" required>
                     <option value="">-- Select Order --</option>
                     {% for order in orders %}
-                    <option value="{{ order.ord_id }}">{{ order.cust_name }}</option>
-                    {% endfor %}
+                     <option value="{{ order.ord_id }}"
+                         data-customer="{{ order.cust_name }}"
+                         data-city="{{ order.city }}"
+                         data-state="{{ order.state }}"
+                         data-country="{{ order.country }}"
+                         data-status="{{ order.order_status }}"
+
+                         data-product-name="{{ order.product.pro_name }}"
+                         data-product-id="{{ order.product.id }}"
+
+                         data-pre="{{ order.pre_quantity }}"
+                         data-std="{{ order.std_quantity }}"
+                         data-com="{{ order.com_quantity }}"
+                         data-eco="{{ order.eco_quantity }}">
+
+                         Order #{{ order.ord_id }}
+
+                     </option>
+                     {% endfor %}
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="custName" readonly>
+            </div>
+
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="city" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" id="state" readonly>
+                </div>
+            </div>
+
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>Country</label>
+                    <input type="text" id="country" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Order Status</label>
+                    <input type="text" id="orderStatus" readonly>
+                </div>
             </div>
 
             <div class="grid-inputs">
@@ -299,10 +345,62 @@
                 </div>
             </div>
 
+
+
+            
+
+             <h3>Product Details</h3>
+
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="productName" readonly>
+                <input type="hidden" name="product_id" id="productIdHidden">
+            </div>
+
+             {{ item_form.pre_quantity.label_tag }}
+             {{ item_form.pre_quantity }}
+
+             {{ item_form.std_quantity.label_tag }}
+             {{ item_form.std_quantity }}
+
+             {{ item_form.com_quantity.label_tag }}
+             {{ item_form.com_quantity }}
+
+             {{ item_form.eco_quantity.label_tag }}
+             {{ item_form.eco_quantity }}
+
+            
+
             <button type="submit">Create Dispatch</button>
         </form>
         
         <a href="{% url 'logistics_view' %}" class="back-link">← Back to Logistics</a>
     </div>
+
+<script>
+document.getElementById("orderSelect").addEventListener("change", function() {
+
+    var selected = this.options[this.selectedIndex];
+
+    // Customer info
+    document.getElementById("custName").value = selected.dataset.customer || "";
+    document.getElementById("city").value = selected.dataset.city || "";
+    document.getElementById("state").value = selected.dataset.state || "";
+    document.getElementById("country").value = selected.dataset.country || "";
+    document.getElementById("orderStatus").value = selected.dataset.status || "";
+
+    // Product
+    document.getElementById("productName").value = selected.dataset.productName || "";
+    document.getElementById("productIdHidden").value = selected.dataset.productId || "";
+
+    // Quantities auto-fill
+    document.getElementById("id_pre_quantity").value = selected.dataset.pre || 0;
+    document.getElementById("id_std_quantity").value = selected.dataset.std || 0;
+    document.getElementById("id_com_quantity").value = selected.dataset.com || 0;
+    document.getElementById("id_eco_quantity").value = selected.dataset.eco || 0;
+
+});
+</script>
+
 </body>
 </html>

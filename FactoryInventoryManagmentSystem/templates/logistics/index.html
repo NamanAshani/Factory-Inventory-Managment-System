@@ -200,6 +200,7 @@
                         <th>Total</th>
                          <th>Delivery Status</th>
                         <th>Weight</th>
+                        <th>Invoice</th>
                     </tr>
                 </thead>
                 <tbody id="ordersTableBody">
@@ -225,18 +226,42 @@
                         <td>{{ item.com_quantity }}</td>
                         <td><strong>{{ item.total_quantity }}</strong></td>
                         <td>
-                            {% if item.dispatch_id.status == 'delivered' %}
-                            <span style="color: #27ae60;">Delivered</span>
-                            {% else %}
-                            <span style="color: #3498db;">In-Transit</span>
-                            {% endif %}
+                            <form method="POST" action="{% url 'update_dispatch_status' item.dispatch_id.id %}">
+                                {% csrf_token %}
+                                <select name="status" onchange="this.form.submit()" 
+                                        style="padding:4px; border-radius:6px">
+
+                                    <option value="in-transit"
+                                        {% if item.dispatch_id.status == 'in-transit' %}selected{% endif %} style="color: green;">
+                                        In-Transit
+                                    </option>
+
+                                    <option value="delivered"
+                                        {% if item.dispatch_id.status == 'delivered' %}selected{% endif %} style="color: blue;">
+                                        Delivered
+                                    </option>
+                                   
+
+                                </select>
+                            </form>
+
                         </td>
                         <td>{{ item.weight }}</td>
+                        <td><a href="{% url 'print_invoice' item.dispatch_id.id %}" target="_blank"> Invoice</td>
                     </tr>
                     {% empty %}
                     <tr>
                         <td colspan="13" style="text-align: center; padding: 30px;">No dispatch items found</td>
                     </tr>
+                    
+
+                    {% comment %} <th>Invoice</th>
+
+                    <td>
+                    <a href="{% url 'print_invoice' item.dispatch_id %}" target="_blank">
+                    Print
+                    </a>
+                    </td> {% endcomment %}
                     {% endfor %}
                 </tbody>
                 
@@ -251,6 +276,7 @@
     <div id="design-view-section" class="tab-content" style="display: none;">
         <!-- Keep existing design view section if needed -->
     </div>
+
     
     <!-- Footer Stats -->
     <div style="display: flex; justify-content: space-between; padding: 15px 30px; color: #666; border-top: 1px solid #e0e0e0; margin-top: 20px;">

@@ -38,5 +38,17 @@ class DispatchItem(models.Model):
     total_quantity = models.IntegerField(default=0)
     weight=models.FloatField()
 
+
+    def save(self, *args, **kwargs):
+        
+        self.total_quantity = (
+            self.pre_quantity +
+            self.std_quantity +
+            self.com_quantity +
+            self.eco_quantity
+        )
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
          return f"{self.product_id.pro_name}-{self.total_quantity}pcs(Dispatch #{self.dispatch_id})"

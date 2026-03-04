@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice {{ dispatch.invoice_number }}</title>
+    <style>
+        body { font-family: Arial; padding: 30px; }
+        h2 { text-align: center; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+        }
+        .print-btn {
+            margin-top: 20px;
+        }
+        @media print {
+            .print-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h2>INVOICE</h2>
+
+<div class="top-section">
+    <div>
+        <strong>Invoice No:</strong> {{ dispatch.invoice_number }} <br>
+        <strong>Date:</strong> {{ dispatch.dispatch_date }} <br>
+        <strong>Vehicle:</strong> {{ dispatch.vehicle_number }} <br>
+        <strong>Driver:</strong> {{ dispatch.driver_name }} <br>
+    </div>
+
+    <div>
+        <strong>Delivery Type:</strong> {{ dispatch.delivery_type|upper }} <br>
+        <strong>Status:</strong> {{ dispatch.status|title }}
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>PRE</th>
+            <th>STD</th>
+            <th>ECO</th>
+            <th>COM</th>
+            <th>Total</th>
+            <th>Weight</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.product_id.pro_name }}</td>
+            <td>{{ item.pre_quantity }}</td>
+            <td>{{ item.std_quantity }}</td>
+            <td>{{ item.eco_quantity }}</td>
+            <td>{{ item.com_quantity }}</td>
+            <td>{{ item.total_quantity }}</td>
+            <td>{{ item.weight }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="print-btn">
+    <button onclick="window.print()">Print Invoice</button>
+</div>
+
+</body>
+</html>
