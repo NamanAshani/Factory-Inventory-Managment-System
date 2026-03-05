@@ -149,23 +149,48 @@ Eway Bill No : 0000000
 <table>
 
 <tr>
-<th>Sr</th>
-<th class="left">Particular</th>
-<th>Quantity</th>
-<th>Weight</th>
+<th rowspan="2">Sr</th>
+<th rowspan="2" class="left">Particular</th>
+<th rowspan="2">Brand</th>
+<th rowspan="2">Design</th>
+<th colspan="4">Quantity</th>
+<th rowspan="2">Weight</th>
+</tr>
+
+<tr>
+<th>PRE</th>
+<th>STD</th>
+<th>COM</th>
+<th>ECO</th>
 </tr>
 
 {% for item in items %}
 
 <tr>
 
-<td>{{forloop.counter}}</td>
+<td>{{ forloop.counter }}</td>
 
-<td class="left">{{item.product_id.pro_name}}</td>
+<td class="left">
+{{ item.product_id.pro_name }} {{ item.product_id.punch_name }}
+</td>
 
-<td>{{item.total_quantity}}</td>
+<td>
+{{ item.product_id.brand }}
+</td>
 
-<td>{{item.weight}}</td>
+<td>
+{{ item.product_id.design }}
+</td>
+
+<td>{{ item.pre_quantity }}</td>
+
+<td>{{ item.std_quantity }}</td>
+
+<td>{{ item.com_quantity }}</td>
+
+<td>{{ item.eco_quantity }}</td>
+
+<td>{{ item.weight }}</td>
 
 </tr>
 
