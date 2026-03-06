@@ -51,3 +51,20 @@ def order_home(request):
         "delivered_orders": all_orders.filter(status="delivered").count(),
     })
 
+def order_create(request):
+    customers = Customer.objects.all().order_by("customer_name")
+    products = Product.objects.all().order_by("pro_name")  
+
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("order_home")
+    else:
+        form = OrderForm()
+
+    return render(request, "order/order_create.html", {
+        "form": form,
+        "customers": customers,
+        "products": products,
+    })
