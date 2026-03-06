@@ -90,3 +90,13 @@ def order_update(request, pk):
         "products": products,
     })
 
+def order_delete(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+
+    if request.method == "POST":
+        order.delete()
+        messages.success(request, "Order deleted successfully.")
+        return redirect("order_home")
+
+    return render(request, "order/order_confirm_delete.html", {"order": order})
+
