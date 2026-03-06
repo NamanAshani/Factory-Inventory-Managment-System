@@ -7,6 +7,7 @@ from customer.models import Customer
 from django.db.models import Q
 from django.contrib import messages
 
+
 def order_home(request):
     orders = Order.objects.select_related('cust_name', 'product').all().order_by('-ord_date')
 
