@@ -68,3 +68,25 @@ def order_create(request):
         "customers": customers,
         "products": products,
     })
+
+def order_update(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+
+    if request.method == "POST":
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect("order_home")
+    else:
+        form = OrderForm(instance=order)
+
+    customers = Customer.objects.all().order_by("customer_name")
+    products = Product.objects.all()
+
+    return render(request, "order/order_update.html", {
+        "form": form,
+        "order": order,
+        "customers": customers,
+        "products": products,
+    })
+
