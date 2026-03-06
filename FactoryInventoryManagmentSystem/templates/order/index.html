@@ -230,8 +230,11 @@
             <div class="section-header">
                 <h2 class="section-title">Manage Order</h2>
                 <div>
-                   
 
+                    <a class="btn btn-primary" href="{% url 'order_create' %}">
+                        <i class="fas fa-plus"></i> Create New Order
+                    </a>
+                    
                     <a href="{% url 'add_customer' %}" class="btn btn-primary" style="margin-left: 10px;">
                         <i class="fas fa-plus"></i> Add Customer
                     </a>
