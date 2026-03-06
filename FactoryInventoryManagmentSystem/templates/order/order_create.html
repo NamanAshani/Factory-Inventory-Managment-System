@@ -1,0 +1,709 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Tile Order</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f0f2f5;
+            padding: 30px 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .page-title i {
+            color: #3b82f6;
+            font-size: 32px;
+        }
+        
+        .back-btn {
+            background: white;
+            color: #475569;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #f8fafc;
+            transform: translateX(-5px);
+        }
+        
+        /* Main Card */
+        .order-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        /* Tile Header */
+        .tile-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            padding: 30px;
+            color: white;
+        }
+        
+        .tile-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tile-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        /* Form Sections */
+        .form-sections {
+            padding: 30px;
+        }
+        
+        .section {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        
+        .section-title i {
+            color: #3b82f6;
+            font-size: 20px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #475569;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .required {
+            color: #ef4444;
+            font-size: 12px;
+        }
+        
+        input, select, textarea {
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        
+        /* Tile Category Badges */
+        .category-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .category-option {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .category-option input[type="radio"] {
+            display: none;
+        }
+        
+        .category-option label {
+            display: block;
+            padding: 15px;
+            text-align: center;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .category-option input[type="radio"]:checked + label {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        
+        /* Tile Size Options */
+        .size-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .size-option {
+            flex: 1;
+            min-width: 80px;
+        }
+        
+        .size-option input[type="radio"] {
+            display: none;
+        }
+        
+        .size-option label {
+            display: block;
+            padding: 12px;
+            text-align: center;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .size-option input[type="radio"]:checked + label {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        /* Quantity Grid */
+        .quantity-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .quantity-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .quantity-item:hover {
+            border-color: #3b82f6;
+        }
+        
+        .quantity-label {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .quantity-label i {
+            color: #3b82f6;
+        }
+        
+        .quantity-input {
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .quantity-input:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            background: #fef3c7;
+            color: #92400e;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Invoice Number */
+        .invoice-display {
+            background: #e2e8f0;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            color: #1e293b;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        /* Total Box */
+        .total-box {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .total-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .total-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        /* Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 25px 30px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+        }
+        
+        .btn-cancel {
+            background: white;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .btn-cancel:hover {
+            background: #f1f5f9;
+        }
+        
+        .btn-save {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        
+        .btn-save:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        /* Error Styling */
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .quantity-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .category-options, .size-options {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <i class="fas fa-plus-circle"></i>
+                Create New Tile Order
+            </div>
+            <a href="{% url 'order_home' %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Orders
+            </a>
+        </div>
+
+        <!-- Main Order Form -->
+        <div class="order-card">
+            <div class="tile-header">
+                <h1><i class="fas fa-border-all"></i> Tiles Order Entry</h1>
+                <p>Fill in the tile specifications and customer details below</p>
+            </div>
+
+            <form method="POST" action="{% url 'order_create' %}">
+                {% csrf_token %}
+                
+                <!-- Form Sections -->
+                <div class="form-sections">
+
+                    <!-- Customer Information Section -->
+                    <div class="section">
+                        <div class="section-title">
+                            <i class="fas fa-user"></i>
+                            Customer Details
+                        </div>
+                         <div class="form-grid">
+                              <div class="form-group">
+                                 <label>Customer <span class="required">*</span></label>
+
+                               <select name="cust_name" required>
+                                   <option value="">Select Customer</option>
+                                       {% for c in customers %}
+                                   <option value="{{ c.customer_id }}">{{ c.customer_name }}</option>
+                                       {% endfor %}
+                                </select>
+                          </div>
+   
+                            
+                            <div class="form-group">
+                                <label>Country</label>
+                                <input type="text" name="country" placeholder="Country" value="India">
+                            </div>
+
+                            <div class="form-group">
+                                <label>State</label>
+                                <input type="text" name="state" placeholder="State">
+                            </div>
+
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" name="city" placeholder="City">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Address</label>
+                                <textarea name="address" rows="2" placeholder="Full address..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pincode</label>
+                                <input type="text" name="pincode" placeholder="6-digit pincode">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Reference Party</label>
+                                <input type="text" name="ref_party" placeholder="Reference if any">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tile Specifications Section -->
+                    <div class="section">
+                        <div class="section-title">
+                            <i class="fas fa-border-all"></i>
+                            Tile Specifications
+                        </div>
+                        
+                        <!-- Tile Category (Mate, Glossy, etc) -->
+                         <div class="form-group">
+                        <label>Product <span class="required">*</span></label>
+
+                        <select name="product" required>
+                        <option value="">Select Product</option>
+                       {% for p in products %}
+                        <option value="{{ p.pro_id }}">{{ p.pro_name }}</option>
+                        {% endfor %}
+                        </select>
+                        </div>
+                        <!-- Tile Category (Mate, Glossy, etc) -->
+<div class="form-group full-width" style="margin-bottom: 20px;">
+    <label>Tile Category <span class="required">*</span></label>
+    <input type="text" name="category" placeholder="Enter tile category (e.g., Mate, Glossy, Wood, Marble)" required style="width: 100%;">
+</div>
+                        <div class="form-group">
+                              <label>Order Type</label>
+
+                              <select name="order_type" required>
+                               <option value="">Select Type</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Wholesale">Wholesale</option>
+                                <option value="Export">Export</option>
+                                <option value="Pre-order">Pre-order</option>
+                         </select>
+                          </div> 
+
+                          <div class="form-group"> 
+                            <label>Order Status</label>
+
+                          <select name="order_status" required>
+                          <option value="">Select Status</option>
+                           <option value="New">New</option>
+                            <option value="Confirmed">Confirmed</option>
+                           <option value="Processing">Processing</option>
+                           </select>
+                            </div>
+                    
+                  <div class="form-group full-width" style="margin-bottom: 20px;">
+                      <label>Tile Size (in cm) <span class="required">*</span></label>
+                 <input type="text" name="size" placeholder="Enter tile size (e.g., 30x30, 60x60, 45x90)" required style="width: 100%;">
+                </div>
+
+                        <!-- MRP Zone -->
+                        <div class="form-group">
+                            <label>MRP Zone</label>
+                            <select name="mrp_zone">
+                                <option value="">Select Zone</option>
+                                <option value="Zone 1">Zone 1</option>
+                                <option value="Zone 2">Zone 2</option>
+                                <option value="Zone 3">Zone 3</option>
+                                <option value="Zone 4">Zone 4</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Remark</label>
+                            <input type="text" name="remark" placeholder="Any special remarks">
+                        </div>
+                    </div>
+  
+                    <!-- Quantity Section -->
+                    <div class="section">
+                        <div class="section-title">
+                            <i class="fas fa-cubes"></i>
+                            Quantity Details 
+                        </div>
+                        
+                        <div class="quantity-grid">
+                            <div class="quantity-item">
+                                <div class="quantity-label">
+                                    <i class="fas fa-box"></i> PRE
+                                </div>
+                                <input type="number" class="quantity-input" name="pre_quantity" id="pre_qty" value="0" min="0">
+                            </div>
+                            
+                            <div class="quantity-item">
+                                <div class="quantity-label">
+                                    <i class="fas fa-box"></i> COM
+                                </div>
+                                <input type="number" class="quantity-input" name="com_quantity" id="com_qty" value="0" min="0">
+                            </div>
+                            
+                            <div class="quantity-item">
+                                <div class="quantity-label">
+                                    <i class="fas fa-box"></i> STD
+                                </div>
+                                <input type="number" class="quantity-input" name="std_quantity" id="std_qty" value="0" min="0">
+                            </div>
+                            
+                            <div class="quantity-item">
+                                <div class="quantity-label">
+                                    <i class="fas fa-box"></i> ECO
+                                </div>
+                                <input type="number" class="quantity-input" name="eco_quantity" id="eco_qty" value="0" min="0">
+                            </div>
+                        </div>
+                        
+                        <!-- Total Quantity Box -->
+                        <div class="total-box">
+                            <span class="total-label">
+                                <i class="fas fa-calculator"></i> Total Boxes:
+                            </span>
+                            <span class="total-value" id="total_display">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Order Status Section -->
+                    <div class="section">
+                        <div class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Order Information
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Invoice Number</label>
+                                <div class="invoice-display">
+                                    <i class="fas fa-file-invoice"></i>
+                                    TILE/2024/001
+                                </div>
+                                <input type="hidden" name="invoice_no" value="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Order Status</label>
+                                <div class="status-badge">
+                                    <i class="fas fa-clock"></i>
+                                    Pending
+                                </div>
+                                <input type="hidden" name="status" value="pending">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Validation Errors
+                    {% if form.errors %}
+                    <div style="background: #fee2e2; border-radius: 10px; padding: 15px; margin-top: 20px;">
+                        <div style="color: #991b1b; font-weight: 600; margin-bottom: 10px;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Please correct the following errors:
+                        </div>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <div class="error-message">
+                                <i class="fas fa-times-circle"></i>
+                                {{ field|title }}: {{ error }}
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div> -->
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a href="{% url 'order_home' %}" class="btn btn-cancel">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save"></i>
+                        Create Tile Order
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for quantity calculation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const preInput = document.getElementById('pre_qty');
+            const comInput = document.getElementById('com_qty');
+            const stdInput = document.getElementById('std_qty');
+            const ecoInput = document.getElementById('eco_qty');
+            const totalDisplay = document.getElementById('total_display');
+            
+            function updateTotal() {
+                const pre = parseInt(preInput.value) || 0;
+                const com = parseInt(comInput.value) || 0;
+                const std = parseInt(stdInput.value) || 0;
+                const eco = parseInt(ecoInput.value) || 0;
+                const total = pre + com + std + eco;
+                
+                totalDisplay.textContent = total;
+                
+                // Add animation when total changes
+                totalDisplay.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    totalDisplay.style.transform = 'scale(1)';
+                }, 200);
+            }
+            
+            [preInput, comInput, stdInput, ecoInput].forEach(input => {
+                input.addEventListener('input', updateTotal);
+            });
+        });
+    </script>
+</body>
+</html> 
