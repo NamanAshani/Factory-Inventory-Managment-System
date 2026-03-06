@@ -164,45 +164,54 @@ def logistics_view(request):
 def add_dispatch(request):
 
     if request.method == "POST":
+        post_data = request.POST.copy()
 
-        dispatch_form = DispatchForm(request.POST)
-        item_form = DispatchItemForm(request.POST)
+        order_id = post_data.get("order")
+        order = Order.objects.get(ord_id=order_id)
 
-        if dispatch_form.is_valid() and item_form.is_valid():
+    # 🔥 Inject product_id into POST before form validation
+        post_data["product_id"] = order.product.pro_id
 
-            order = dispatch_form.cleaned_data["order"]
+        dispatch_form = DispatchForm(post_data)
+        item_form = DispatchItemForm(post_data)
 
-            dispatch = dispatch_form.save()
+        if dispatch_form.is_valid() and item_form.is_valid()    :
 
-            dispatch_item = item_form.save(commit=False)
+           dispatch = dispatch_form.save()
 
-            dispatch_item.dispatch_id = dispatch
-            dispatch_item.product_id = order.product
+           order_id = request.POST.get("order")
+           order = Order.objects.get(ord_id=order_id)
 
-            dispatch_item.pre_quantity = min(dispatch_item.pre_quantity, order.pre_quantity)
-            dispatch_item.std_quantity = min(dispatch_item.std_quantity, order.std_quantity)
-            dispatch_item.com_quantity = min(dispatch_item.com_quantity, order.com_quantity)
-            dispatch_item.eco_quantity = min(dispatch_item.eco_quantity, order.eco_quantity)
+    # 🔥 Don't validate item_form first
+           dispatch_item = item_form.save(commit=False)
 
-            dispatch_item.total_quantity = (
-                dispatch_item.pre_quantity +
-                dispatch_item.std_quantity +
-                dispatch_item.com_quantity +
-                dispatch_item.eco_quantity
-            )
+           dispatch_item.dispatch_id = dispatch
+           dispatch_item.product_id = order.product  # force set
 
-            if dispatch_item.total_quantity >= order.total_quantity:
-                dispatch.delivery_type = "full"
-            else:
-                dispatch.delivery_type = "partial"
+           dispatch_item.pre_quantity = min(int(request.POST.get("pre_quantity", 0)), order.pre_quantity)
+           dispatch_item.std_quantity = min(int(request.POST.get("std_quantity", 0)), order.std_quantity)
+           dispatch_item.com_quantity = min(int(request.POST.get("com_quantity", 0)), order.com_quantity)
+           dispatch_item.eco_quantity = min(int(request.POST.get("eco_quantity", 0)), order.eco_quantity)
 
-            dispatch.save()
+           dispatch_item.total_quantity = (
+           dispatch_item.pre_quantity +
+           dispatch_item.std_quantity +
+           dispatch_item.com_quantity +
+           dispatch_item.eco_quantity
+        )
 
-            dispatch_item.weight = dispatch.total_weight
-            dispatch_item.save()
+           if dispatch_item.total_quantity >= order.total_quantity:
+               dispatch.delivery_type = "full"
+           else:
+               dispatch.delivery_type = "partial"
 
-            messages.success(request, "Dispatch created successfully!")
-            return redirect("logistics_view")
+           dispatch.save()
+
+           dispatch_item.weight = dispatch.total_weight
+           dispatch_item.save()
+
+           messages.success(request, "Dispatch created successfully!")
+           return redirect("logistics_view")       
 
         else:
             print("Dispatch Errors:", dispatch_form.errors)
@@ -217,6 +226,7 @@ def add_dispatch(request):
         "item_form": item_form,
         "orders": Order.objects.all().order_by('-ord_id'),
     })
+
 
 
 
