@@ -271,6 +271,7 @@
                             <th>COM</th>
                             <th>STD</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
 
@@ -293,6 +294,10 @@
                             </a>
                             </td>
                             <td>
+                            <a href="{% url 'order_delete' o.ord_id %}" style="color:#ef4444; font-weight:700;">
+                             Delete
+                            </a>
+                            </td>
                             <td>
                                 <span class="status-badge
                                     {% if o.status == 'pending' %}status-pending
