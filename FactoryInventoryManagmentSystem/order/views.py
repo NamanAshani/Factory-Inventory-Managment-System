@@ -60,6 +60,8 @@ def order_create(request):
         if form.is_valid():
             form.save()
             return redirect("order_home")
+        else:
+            print("Please correct the errors below.",form.errors)
     else:
         form = OrderForm()
 
@@ -100,3 +102,26 @@ def order_delete(request, pk):
 
     return render(request, "order/order_confirm_delete.html", {"order": order})
 
+def order_list(request):
+
+
+    orders = Order.objects.select_related(
+        'cust_name',
+        'product'
+    ).all().order_by('-ord_date')
+
+
+    return render(request, "order/order_list.html", {
+        "orders": orders
+    })
+
+
+def order_details(request, pk):
+
+
+    order = get_object_or_404(Order, pk=pk)
+
+
+    return render(request, "order/order_details.html", {
+        "order": order
+    })
