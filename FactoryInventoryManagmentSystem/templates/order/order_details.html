@@ -640,7 +640,9 @@
                 <div class="info-icon"><i class="fas fa-box"></i></div>
                 <div class="info-text">
                     <div class="info-label">Product</div>
-                    <div class="info-value">{{ order.product }}</div>
+                    <a href="{% url 'order_magic' order.product.pro_id %}">
+                           {{ order.product }}
+                    </a>
                 </div>
             </div>
 
@@ -771,6 +773,21 @@
             <div class="quantity-label">Total Quantity</div>
             <div class="quantity-value">{{ order.total_quantity }}</div>
         </div>
+
+
+        <!-- Stock Information (SC1 addition) -->
+
+        <div class="quantity-grid">
+    <div class="quantity-item">
+        <div class="quantity-label">Stock Available</div>
+        <div class="quantity-value">{{ stock_qty }}</div>
+    </div>
+
+    <div class="quantity-item">
+        <div class="quantity-label">Remaining / Pending</div>
+        <div class="quantity-value">{{ remaining }}</div>
+    </div>
+</div>
 
         <!-- Remark -->
         {% if order.remark %}

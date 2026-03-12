@@ -278,7 +278,11 @@
                     <tbody>
                         {% for o in orders %}
                         <tr>
-                            <td>{{ o.ord_id }}</td>
+                        <td>
+                        <a href="{% url 'order_detail' o.ord_id %}">
+                           {{ o.ord_id }}
+                         </a>
+                         </td>                            
                             <td>{{ o.product }}</td>
                             <td>{{ o.product.brand }}</td>
                             <td>{{ o.product.design }}</td>

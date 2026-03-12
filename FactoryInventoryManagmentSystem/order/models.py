@@ -32,6 +32,8 @@ class Order(models.Model):
     com_quantity = models.IntegerField(default=0)
     eco_quantity = models.IntegerField(default=0)
     total_quantity = models.IntegerField(default=0)
+    allocated_quantity = models.IntegerField(default=0)
+    allocation_locked = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.total_quantity = (
