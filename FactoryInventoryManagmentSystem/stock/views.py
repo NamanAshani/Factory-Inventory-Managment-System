@@ -1,3 +1,5 @@
+from django.contrib import messages
+
 from django.shortcuts import render,redirect
 from .models import Stock,Product
 from .forms import ProductForm
@@ -106,23 +108,51 @@ def add_product(request):
 @login_required(login_url="login")
 def add_stock(request):
     products = Product.objects.all()
+
     if request.method == "POST":
-        pro_id = request.POST.get('product')
+        pro_id = request.POST.get("product")
+        action = request.POST.get("action")
 
         if not pro_id:
-            return redirect('add_stock')
+            messages.error(request, "Please select a product.")
+            return redirect("add_stock")
+
+        if action not in ["add", "remove", "update"]:
+            messages.error(request, "Invalid action selected.")
+            return redirect("add_stock")
 
         stock, created = Stock.objects.get_or_create(product_id=pro_id)
 
-        stock.pre_quantity = int(request.POST.get('pre_quantity') or 0)
-        stock.std_quantity = int(request.POST.get('std_quantity') or 0)
-        stock.com_quantity = int(request.POST.get('com_quantity') or 0)
-        stock.eco_quantity = int(request.POST.get('eco_quantity') or 0)
+        pre_qty = int(request.POST.get("pre_quantity") or 0)
+        std_qty = int(request.POST.get("std_quantity") or 0)
+        com_qty = int(request.POST.get("com_quantity") or 0)
+        eco_qty = int(request.POST.get("eco_quantity") or 0)
+
+        if action == "add":
+            stock.pre_quantity += pre_qty
+            stock.std_quantity += std_qty
+            stock.com_quantity += com_qty
+            stock.eco_quantity += eco_qty
+            messages.success(request, "Stock added successfully.")
+
+        elif action == "remove":
+            stock.pre_quantity = max(0, stock.pre_quantity - pre_qty)
+            stock.std_quantity = max(0, stock.std_quantity - std_qty)
+            stock.com_quantity = max(0, stock.com_quantity - com_qty)
+            stock.eco_quantity = max(0, stock.eco_quantity - eco_qty)
+            messages.success(request, "Stock removed successfully.")
+
+        elif action == "update":
+            stock.pre_quantity = pre_qty
+            stock.std_quantity = std_qty
+            stock.com_quantity = com_qty
+            stock.eco_quantity = eco_qty
+            messages.success(request, "Stock updated successfully.")
 
         stock.save()
+        return redirect("add_stock")
 
-        return redirect('index')
-
+    return render(request, "Stock/add_stock.html", {"products": products})
      
 
     return render(request, 'Stock/add_stock.html', {'products': products})

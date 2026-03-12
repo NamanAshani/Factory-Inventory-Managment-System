@@ -3,16 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Stock - Inventory Management</title>
-    <!-- Importing Poppins font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Manage Stock - Inventory Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --accent-color: #00f2fe;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
             --text-color: #ffffff;
+            --muted-text: rgba(255, 255, 255, 0.75);
+
+            --input-bg: rgba(255, 255, 255, 0.06);
+            --input-border: rgba(255, 255, 255, 0.12);
+            --input-focus: #66e3ff;
+
+            --add-gradient: linear-gradient(90deg, #00c853, #00e676);
+            --remove-gradient: linear-gradient(90deg, #ff416c, #ff1744);
+            --update-gradient: linear-gradient(90deg, #00c6ff, #0072ff);
+
+            --shadow-dark: rgba(0, 0, 0, 0.35);
         }
 
         * {
@@ -27,13 +36,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #0f0c29;
-            /* Animated background gradient */
+            padding: 20px;
             background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1f1c2c);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
-            padding: 20px;
             overflow-x: hidden;
+            position: relative;
         }
 
         @keyframes gradientBG {
@@ -42,52 +50,58 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Decorative Background Elements */
         .bg-circle {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
+            filter: blur(90px);
+            z-index: 0;
+            opacity: 0.35;
         }
+
         .circle-1 {
-            width: 300px;
-            height: 300px;
-            background: #764ba2;
-            top: 10%;
-            left: 10%;
+            width: 260px;
+            height: 260px;
+            background: #7c4dff;
+            top: 8%;
+            left: 8%;
         }
+
         .circle-2 {
-            width: 400px;
-            height: 400px;
-            background: #667eea;
-            bottom: 10%;
-            right: 10%;
+            width: 320px;
+            height: 320px;
+            background: #2979ff;
+            bottom: 8%;
+            right: 8%;
         }
 
         .container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 24px;
+            position: relative;
+            z-index: 1;
             width: 100%;
-            max-width: 450px;
+            max-width: 520px;
+            padding: 36px;
+            border-radius: 28px;
+            background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 24px 50px var(--shadow-dark);
             color: var(--text-color);
-            transition: transform 0.3s ease;
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 30px;
-            font-weight: 600;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
-            background: linear-gradient(to right, #fff, #ccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--muted-text);
+            font-size: 0.95rem;
+            margin-bottom: 28px;
         }
 
         .form-group {
@@ -98,109 +112,125 @@
             display: block;
             margin-bottom: 8px;
             font-size: 0.85rem;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            color: var(--muted-text);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
         }
 
-        .input-wrapper {
-            position: relative;
-        }
-
-        input, select {
+        select,
+        input[type="number"] {
             width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            outline: none;
-            font-size: 1rem;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
             color: white;
+            font-size: 1rem;
+            outline: none;
             transition: all 0.3s ease;
         }
 
         select option {
-            background: #302b63;
+            background: #2f2858;
             color: white;
         }
 
-        input:focus, select:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-color);
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+        select:focus,
+        input[type="number"]:focus {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 4px rgba(102, 227, 255, 0.12);
+            background: rgba(255, 255, 255, 0.10);
         }
 
-        /* Styling number inputs */
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
             opacity: 1;
-            cursor: pointer;
         }
 
         .grid-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 18px;
+            margin-bottom: 8px;
         }
 
-        button {
-            width: 100%;
+        .input-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 14px;
-            margin-top: 10px;
-            border: none;
+            border-radius: 18px;
+        }
+
+        .input-card label {
+            margin-bottom: 10px;
+        }
+
+        .action-info {
+            margin: 16px 0 12px;
+            padding: 12px 14px;
+            border-left: 4px solid #66e3ff;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            color: var(--muted-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px 18px;
+            border: none;
+            border-radius: 14px;
             color: white;
             font-size: 1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
         }
 
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 114, 255, 0.5);
-            filter: brightness(1.1);
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.06);
         }
 
-        button:active {
+        .btn:active {
             transform: translateY(0);
         }
 
-        /* Toast notification styling (simulation) */
-        #message-box {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: #2ecc71;
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 1000;
-            animation: slideIn 0.5s ease;
+        .btn-add {
+            background: var(--add-gradient);
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .btn-remove {
+            background: var(--remove-gradient);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
+        .btn-update {
+            background: var(--update-gradient);
+        }
+
+        @media (max-width: 520px) {
             .container {
-                padding: 25px;
+                padding: 24px;
             }
+
             .grid-inputs {
                 grid-template-columns: 1fr;
             }
+
             h2 {
-                font-size: 1.5rem;
+                font-size: 1.7rem;
             }
         }
     </style>
@@ -210,68 +240,65 @@
     <div class="bg-circle circle-1"></div>
     <div class="bg-circle circle-2"></div>
 
-    <div id="message-box">Stock updated successfully!</div>
-
     <div class="container">
-        <h2>Add Stock</h2>
+        <h2>Manage Stock</h2>
+        <p class="subtitle">Add, remove, or directly update product inventory</p>
 
         <form method="POST">
             {% csrf_token %}
+
             <div class="form-group">
                 <label for="product">Product Type</label>
-                <select name="product">
-            <option value="">Select Product</option>
-            {% for product in products %}
-                    <option value="{{ product.pro_id }}" name="product">{{ product.pro_name }}</option>
-            {% endfor %}
-            
-            </select>
+                <select name="product" id="product" required>
+                    <option value="">Select Product</option>
+                    {% for product in products %}
+                        <option value="{{ product.pro_id }}">{{ product.pro_name }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="grid-inputs">
-                <div class="form-group">
-                    <label>Premium</label>
-                    <input type="number" name="pre_quantity" >
+                <div class="input-card">
+                    <label for="pre_quantity">Premium</label>
+                    <input type="number" id="pre_quantity" name="pre_quantity" min="0" value="0">
                 </div>
 
-                <div class="form-group">
-                    <label>Standard</label>
-                    <input type="number" name="std_quantity">
+                <div class="input-card">
+                    <label for="std_quantity">Standard</label>
+                    <input type="number" id="std_quantity" name="std_quantity" min="0" value="0">
                 </div>
 
-                <div class="form-group">
-                    <label>Commercial</label>
-                    <input type="number" name="com_quantity">
+                <div class="input-card">
+                    <label for="com_quantity">Commercial</label>
+                    <input type="number" id="com_quantity" name="com_quantity" min="0" value="0">
                 </div>
 
-                <div class="form-group">
-                    <label>Eco</label>
-                    <input type="number" name="eco_quantity">
+                <div class="input-card">
+                    <label for="eco_quantity">Eco</label>
+                    <input type="number" id="eco_quantity" name="eco_quantity" min="0" value="0">
                 </div>
-
-                
             </div>
 
-            <button type="submit">Update Inventory</button>
+            <div class="action-info">
+                <strong>Add:</strong> increases stock<br>
+                <strong>Remove:</strong> decreases stock<br>
+                <strong>Update:</strong> replaces stock with exact values
+            </div>
+
+            <div class="button-group">
+                <button type="submit" name="action" value="add" class="btn btn-add">
+                    Add to Inventory
+                </button>
+
+                <button type="submit" name="action" value="remove" class="btn btn-remove">
+                    Remove from Inventory
+                </button>
+
+                <button type="submit" name="action" value="update" class="btn btn-update">
+                    Update Inventory
+                </button>
+            </div>
         </form>
     </div>
-
-    {% comment %} <script>
-        document.getElementById('stockForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Show success message
-            const msg = document.getElementById('message-box');
-            msg.style.display = 'block';
-            
-            // Hide after 3 seconds
-            setTimeout(() => {
-                msg.style.display = 'none';
-            }, 3000);
-
-            // You would typically handle form data here
-            console.log("Form Submitted Successfully");
-        });
-    </script> {% endcomment %}
 </body>
 </html>

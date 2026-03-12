@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import DispatchForm, DispatchItemForm
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
+from stock.models import Stock
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required(login_url="login")
 def logistics_view(request):
@@ -210,6 +212,17 @@ def add_dispatch(request):
            dispatch_item.weight = dispatch.total_weight
            dispatch_item.save()
 
+           if dispatch.status == "delivered":
+               items = DispatchItem.objects.filter(dispatch_id = dispatch)
+               for item in items:
+                        stock, created = Stock.objects.get_or_create(product_id=item.product_id)
+                        stock.pre_quantity -= item.pre_quantity
+                        stock.std_quantity -= item.std_quantity
+                        stock.com_quantity -= item.com_quantity
+                        stock.eco_quantity -= item.eco_quantity
+                        stock.total_quantity-=item.total_quantity
+                        stock.save()
+
            messages.success(request, "Dispatch created successfully!")
            return redirect("logistics_view")       
 
@@ -231,6 +244,7 @@ def add_dispatch(request):
 
 
 @login_required(login_url="login")
+@csrf_exempt
 def update_dispatch_status(request, dispatch_id):
 
     if request.method == "POST":
@@ -242,6 +256,17 @@ def update_dispatch_status(request, dispatch_id):
             if new_status in ["in-transit", "delivered"]:
                 dispatch.status = new_status
                 dispatch.save()
+                if(new_status=="delivered"):
+                    items = DispatchItem.objects.filter(dispatch_id=dispatch)
+                    for item in items:
+                        stock, created = Stock.objects.get_or_create(product_id=item.product_id)
+                        stock.pre_quantity -= item.pre_quantity
+                        stock.std_quantity -= item.std_quantity
+                        stock.com_quantity -= item.com_quantity
+                        stock.eco_quantity -= item.eco_quantity
+                        stock.total_quantity-=item.total_quantity
+                        stock.save()
+            else:                messages.error(request, "Invalid status value.")
 
         except Dispatch.DoesNotExist:
             pass
