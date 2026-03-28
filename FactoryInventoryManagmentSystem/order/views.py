@@ -116,7 +116,7 @@ def order_list(request):
     })
 
 
-def order_detail(request, pk):
+def order_details(request, pk):
     order = get_object_or_404(Order, pk=pk)
 
     # get stock for the product

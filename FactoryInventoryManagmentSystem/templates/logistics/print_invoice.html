@@ -202,11 +202,11 @@ Eway Bill No : 0000000
 
 <tr>
 <td style="width:70%"></td>
-<td>Sub Total</td>
+<td>Total</td>
 <td>{{subtotal}}</td>
 </tr>
 
-<tr>
+{% comment %} <tr>
 <td></td>
 <td>CGST 9%</td>
 <td>{{cgst}}</td>
@@ -216,13 +216,13 @@ Eway Bill No : 0000000
 <td></td>
 <td>SGST 9%</td>
 <td>{{sgst}}</td>
-</tr>
+</tr> {% endcomment %}
 
-<tr>
+{% comment %} <tr>
 <td></td>
 <td><b>Grand Total</b></td>
 <td><b>{{grand_total}}</b></td>
-</tr>
+</tr> {% endcomment %}
 
 </table>
 
